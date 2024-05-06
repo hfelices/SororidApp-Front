@@ -92,7 +92,7 @@ export  function Login() {
                   onClick={() => formik.handleSubmit()}
                 >
                   {" "}
-                  {formik.isSubmitting ? <IonSpinner name="crescent" /> : "Entrar"}
+                  {formik.isSubmitting ? <IonSpinner name="circles" color="light" /> : "Entrar"}
                 </IonButton>
               </form>
             </IonContent>

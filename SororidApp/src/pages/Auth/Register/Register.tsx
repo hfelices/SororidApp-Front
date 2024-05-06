@@ -129,7 +129,7 @@ export function Register() {
               onClick={() => formik.handleSubmit()}
             >
               {" "}
-              {formik.isSubmitting ? <IonSpinner name="crescent" /> : "Crear"}
+              {formik.isSubmitting ? <IonSpinner name="circles" color="light"/> : "Crear"}
             </IonButton>
           </form>
         </IonContent>
