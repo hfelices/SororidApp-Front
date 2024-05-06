@@ -19,28 +19,43 @@ import "../Auth.css";
 export function Register() {
   const formik = useFormik({
     initialValues: {
-      nombre: "",
+      name: "",
       email: "",
-      contrasena: "",
+      password: "",
       confirmarContrasena: "",
     },
     validationSchema: Yup.object({
-      nombre: Yup.string().required("El nombre es obligatorio"),
+      name: Yup.string().required("El nombre es obligatorio"),
       email: Yup.string()
         .email("Correo electrónico inválido")
         .required("El correo electrónico es obligatorio"),
-      contrasena: Yup.string()
+        password: Yup.string()
         .required("La contraseña es obligatoria")
         .min(6, "La contraseña debe tener al menos 6 caracteres"),
       confirmarContrasena: Yup.string()
-        .oneOf([Yup.ref("contrasena"), null], "Las contraseñas deben coincidir")
+        .oneOf([Yup.ref("password"), null], "Las contraseñas deben coincidir")
         .required("Confirma tu contraseña"),
     }),
-    onSubmit: (values) => {
-      // Aquí puedes agregar la lógica para enviar los datos del formulario a tu backend
-      setTimeout(() => {
-        console.log("Formulario enviado:", values);
-      }, 500);
+    onSubmit: async (values) => {
+      try {
+        const response = await fetch('http://localhost:8000/api/users', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({name: values.name, email: values.email, password: values.password}),
+        });
+
+        if (!response.ok) {
+          throw new Error('Error en la solicitud');
+        }
+
+        const responseData = await response.json();
+        console.log('Respuesta:', responseData);
+      } catch (error) {
+        console.error('Error al realizar la solicitud:', error);
+      }
     },
   });
 
@@ -58,11 +73,11 @@ export function Register() {
               </IonLabel>
               <IonInput
                 type="text"
-                value={formik.values.nombre}
+                value={formik.values.name}
                 onIonChange={(e) =>
-                  formik.setFieldValue("nombre", e.detail.value!)
+                  formik.setFieldValue("name", e.detail.value!)
                 }
-                onBlur={formik.handleBlur("nombre")}
+                onBlur={formik.handleBlur("name")}
                 required
               ></IonInput>
             </IonItem>
@@ -84,11 +99,11 @@ export function Register() {
               <IonLabel position="stacked">Contraseña</IonLabel>
               <IonInput
                 type="password"
-                value={formik.values.contrasena}
+                value={formik.values.password}
                 onIonChange={(e) =>
-                  formik.setFieldValue("contrasena", e.detail.value!)
+                  formik.setFieldValue("password", e.detail.value!)
                 }
-                onBlur={formik.handleBlur("contrasena")}
+                onBlur={formik.handleBlur("password")}
                 required
               ></IonInput>
             </IonItem>
@@ -106,14 +121,14 @@ export function Register() {
               ></IonInput>
             </IonItem>
             <div className="errors">
-              {formik.touched.nombre && formik.errors.nombre && (
-                <div>{formik.errors.nombre}</div>
+              {formik.touched.name && formik.errors.name && (
+                <div>{formik.errors.name}</div>
               )}
               {formik.touched.email && formik.errors.email && (
                 <div>{formik.errors.email}</div>
               )}
-              {formik.touched.contrasena && formik.errors.contrasena && (
-                <div>{formik.errors.contrasena}</div>
+              {formik.touched.password && formik.errors.password && (
+                <div>{formik.errors.password}</div>
               )}
               {formik.touched.confirmarContrasena &&
                 formik.errors.confirmarContrasena && (
@@ -129,7 +144,7 @@ export function Register() {
               onClick={() => formik.handleSubmit()}
             >
               {" "}
-              {formik.isSubmitting ? <IonSpinner name="circles" color="light"/> : "Crear"}
+              {formik.isSubmitting ? <IonSpinner name="crescent" /> : "Crear"}
             </IonButton>
           </form>
         </IonContent>
