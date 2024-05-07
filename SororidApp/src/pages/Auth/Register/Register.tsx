@@ -44,13 +44,14 @@ export function Register() {
           },
           body: JSON.stringify({ email: values.email, password: values.password}),
         });
-
-        if (!response.ok) {
-          throw new Error('Error en la solicitud');
-        }
-
         const responseData = await response.json();
-        console.log('Respuesta:', responseData);
+        if (responseData.success === true) {
+          console.log('OK! Mensaje:', responseData);
+
+      } else {
+        console.log('Error! Mensaje:', responseData);
+      }
+
       } catch (error) {
         console.error('Error al realizar la solicitud:', error);
       }
@@ -105,9 +106,6 @@ export function Register() {
               ></IonInput>
             </IonItem>
             <div className="errors">
-              {formik.touched.name && formik.errors.name && (
-                <div>{formik.errors.name}</div>
-              )}
               {formik.touched.email && formik.errors.email && (
                 <div>{formik.errors.email}</div>
               )}
@@ -125,7 +123,6 @@ export function Register() {
               type="submit"
               shape="round"
               fill="outline"
-              onClick={() => formik.handleSubmit()}
             >
               {" "}
               {formik.isSubmitting ? <IonSpinner name="crescent" /> : "Crear"}
