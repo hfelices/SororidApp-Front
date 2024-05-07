@@ -19,13 +19,11 @@ import "../Auth.css";
 export function Register() {
   const formik = useFormik({
     initialValues: {
-      name: "",
       email: "",
       password: "",
       confirmarContrasena: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("El nombre es obligatorio"),
       email: Yup.string()
         .email("Correo electrónico inválido")
         .required("El correo electrónico es obligatorio"),
@@ -33,7 +31,7 @@ export function Register() {
         .required("La contraseña es obligatoria")
         .min(6, "La contraseña debe tener al menos 6 caracteres"),
       confirmarContrasena: Yup.string()
-        .oneOf([Yup.ref("password"), null], "Las contraseñas deben coincidir")
+        .oneOf([Yup.ref("password")], "Las contraseñas deben coincidir")
         .required("Confirma tu contraseña"),
     }),
     onSubmit: async (values) => {
@@ -44,7 +42,7 @@ export function Register() {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({name: values.name, email: values.email, password: values.password}),
+          body: JSON.stringify({ email: values.email, password: values.password}),
         });
 
         if (!response.ok) {
@@ -67,21 +65,7 @@ export function Register() {
         </IonAvatar>
         <IonContent className="ion-padding">
           <form onSubmit={formik.handleSubmit}>
-            <IonItem className="">
-              <IonLabel position="stacked" className="patata">
-                Nombre
-              </IonLabel>
-              <IonInput
-                type="text"
-                value={formik.values.name}
-                onIonChange={(e) =>
-                  formik.setFieldValue("name", e.detail.value!)
-                }
-                onBlur={formik.handleBlur("name")}
-                required
-              ></IonInput>
-            </IonItem>
-
+    
             <IonItem>
               <IonLabel position="stacked">Correo electrónico</IonLabel>
               <IonInput
