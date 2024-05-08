@@ -32,6 +32,8 @@ export function Profile() {
   }
 
   const openCamera = async () => {
+    console.log("aloha");
+    
     const response = await Camera.getPhoto({
       resultType: CameraResultType.Uri,
       source: CameraSource.Camera,
@@ -54,12 +56,11 @@ export function Profile() {
             <IonAvatar>
               <img src={image} alt="" />
             </IonAvatar>
-            <IonButton fill="clear">
+            <IonButton fill="clear" onClick={openCamera}>
               <IonIcon
                 className="profile_icon"
                 slot="icon-only"
                 icon={cameraOutline}
-                onClick={openCamera}
               />
             </IonButton>
           </div>
