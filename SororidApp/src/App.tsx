@@ -46,7 +46,6 @@ const App: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
-        <IonSplitPane contentId="main">
           <IonRouterOutlet id="main">
             <Layout>
               <Route path="/" exact={true}>
@@ -67,8 +66,7 @@ const App: React.FC = () => {
             <Route path="/register" exact={true}>
               <Register />
             </Route>
-          </IonRouterOutlet>
-        </IonSplitPane>
+          </IonRouterOutlet>   
       </IonReactRouter>
     </IonApp>
   );
