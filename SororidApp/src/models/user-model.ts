@@ -1,9 +1,10 @@
 export interface UserModel {
     id: number;
+    email: string;
     username: string;
     avatar: string;
     gender: string;
-    town: number;
+    town: string;
     birthdate: Date;
     alertPassword: string;
     onChangeUserProfile: (user: UserModel) => void;

@@ -1,8 +1,4 @@
-import {
-  IonApp,
-  setupIonicReact,
-} from "@ionic/react";
-
+import { IonApp, setupIonicReact } from "@ionic/react";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -34,13 +30,16 @@ import "@ionic/react/css/palettes/dark.system.css";
 /* Theme variables */
 import "./theme/variables.css";
 import { AppNavigation } from "./navigation";
+import { UserContextProvider } from "./context/UserContext";
 
 setupIonicReact();
 
 const App: React.FC = () => {
   return (
     <IonApp>
-      <AppNavigation/>
+      <UserContextProvider>
+        <AppNavigation />
+      </UserContextProvider>
     </IonApp>
   );
 };

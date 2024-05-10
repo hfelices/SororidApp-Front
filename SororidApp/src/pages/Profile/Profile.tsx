@@ -1,10 +1,11 @@
-import  { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Profile.css";
 
 import image from "../../assets/neandermark.jpeg";
 import {
   IonHeader,
   IonButtons,
+  IonInput,
   IonAvatar,
   IonText,
   IonItem,
@@ -17,23 +18,52 @@ import {
 import { cameraOutline, createOutline } from "ionicons/icons";
 import { FooterComponent, Menu } from "../../components";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import useUser from "../../hooks/useUser";
+import { format } from "date-fns";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 export function Profile() {
   const modal = useRef<HTMLIonModalElement>(null);
   const page = useRef(null);
-  const [presentingElement, setPresentingElement] =
-    useState<HTMLElement | null>(null);
+  // const { user } = useUser();
+  const user = JSON.parse(localStorage.getItem("user") || "");
+  const genderMap: Record<string, string> = {
+    female: "Mujer",
+    male: "Hombre",
+    nonbinary: "No binario",
+  };
+  var gender = genderMap[user.profile.gender];
+
+  const fecha = user.profile.birthdate;
+  const fechaFormateada = format(fecha, "dd-MM-yyyy");
+
+  const [load, setLoad] = useState(false);
 
   useEffect(() => {
-    setPresentingElement(page.current);
-  }, []);
-  function dismiss() {
-    modal.current?.dismiss();
-  }
+    setLoad(true);
+  }, [user]);
+
+  const validationSchema = Yup.object().shape({
+    fechaNacimiento: Yup.string().required("Fecha de Nacimiento es requerida"),
+    ciudad: Yup.string().required("Ciudad es requerida"),
+    sexo: Yup.string().required("Sexo es requerido"),
+    contraseñaEmergencia: Yup.string().required(
+      "Contraseña de Emergencia es requerida"
+    ),
+  });
+
+  // Función para manejar el envío del formulario
+  const handleSubmit = (values: any, { setSubmitting }) => {
+    // Aquí puedes enviar los datos a tu backend para actualizar la información
+    console.log("Datos actualizados:", values);
+    // Puedes resetear los estados o mostrar un mensaje de éxito aquí
+    setSubmitting(false);
+  };
 
   const openCamera = async () => {
     console.log("aloha");
-    
+    console.log(user);
     const response = await Camera.getPhoto({
       resultType: CameraResultType.Uri,
       source: CameraSource.Camera,
@@ -66,57 +96,71 @@ export function Profile() {
           </div>
 
           <IonItem>
-            <IonText className="mt-2">Mark Lopez</IonText>
-            <IonButton id="open-modal" fill="clear">
-              <IonIcon
-                className="profile_icon"
-                slot="icon-only"
-                icon={createOutline}
-              />
-            </IonButton>
+            <IonText className="mt-2">{user.data.email}</IonText>
           </IonItem>
         </IonHeader>
 
         <IonContent className="ion-padding">
-          <IonItem className="profile_info_row">
-            <IonText className="profile_text">Fecha de Nacimiento</IonText>
-            <IonIcon className="profile_icon" icon={createOutline} />
-          </IonItem>
-          <IonItem className="profile_info_row">
-            <IonText className="profile_text">Ciudad</IonText>
-            <IonIcon className="profile_icon" icon={createOutline} />
-          </IonItem>
-          <IonItem className="profile_info_row">
-            <IonText className="profile_text">Sexo</IonText>
-            <IonIcon className="profile_icon" icon={createOutline} />
-          </IonItem>
-          <IonItem className="profile_info_row">
-            <IonText className="profile_text">Contraseña de Emergencia</IonText>
-            <IonIcon className="profile_icon" icon={createOutline} />
-          </IonItem>
-
-          <IonModal
-            ref={modal}
-            trigger="open-modal"
-            canDismiss={canDismiss}
-            presentingElement={presentingElement!}
-            initialBreakpoint={0.5}
-            breakpoints={[
-              0.3, 0.31, 0.32, 0.33, 0.34, 0.35, 0.36, 0.37, 0.38, 0.39, 0.4,
-              0.41, 0.42, 0.43, 0.44, 0.45, 0.46, 0.47, 0.48, 0.49, 0.5, 0.51,
-              0.52, 0.53, 0.54, 0.55, 0.56, 0.57, 0.58, 0.59, 0.6, 0.61, 0.62,
-              0.63, 0.64, 0.65, 0.66, 0.67, 0.68, 0.69, 0.7, 0.71, 0.72, 0.73,
-              0.74, 0.75, 0.76, 0.77, 0.78, 0.79, 0.8, 0.81, 0.82, 0.83, 0.84,
-              0.85, 0.86, 0.87, 0.88, 0.89, 0.9, 0.91, 0.92, 0.93, 0.94, 0.95,
-              0.96, 0.97, 0.98, 0.99, 1,
-            ]}
+          <Formik
+            initialValues={{
+              nombre: user.profile.name,
+              fechaNacimiento: fechaFormateada,
+              ciudad: user.profile.town,
+              sexo: gender,
+              contraseñaEmergencia: user.profile.alert_password,
+            }}
+            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
           >
-            <IonButtons slot="end">
-              <IonButton onClick={() => dismiss()}>Close</IonButton>
-            </IonButtons>
-          </IonModal>
-        </IonContent>
+            {({ isSubmitting }) => (
+              <Form>
+                <IonItem className="profile_info_row">
+                  <span>Nombre: </span>
+                  <Field as={IonInput} className="profile_text" name="nombre" />
+                </IonItem>
+                <IonItem className="profile_info_row">
+                  <span>Fecha de Nacimiento: </span>
+                  <Field
+                    as={IonInput}
+                    className="profile_text"
+                    name="fechaNacimiento"
+                  />
+                </IonItem>
 
+                <IonItem className="profile_info_row">
+                  <span>Ciudad: </span>
+                  <Field as={IonInput} className="profile_text" name="ciudad" />
+                </IonItem>
+
+                <IonItem className="profile_info_row">
+                  <span>Sexo: </span>
+                  <Field as={IonInput} className="profile_text" name="sexo" />
+                </IonItem>
+
+                <IonItem className="profile_info_row">
+                  <span>Contraseña de Emergencia: </span>
+                  <Field
+                    as={IonInput}
+                    type="password"
+                    className="profile_text"
+                    name="contraseñaEmergencia"
+                  />
+                </IonItem>
+
+                <IonButton
+                  expand="block"
+                  className="mt-3 my-large-button"
+                  type="submit"
+                  shape="round"
+                  fill="outline"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Enviando..." : "Actualizar"}
+                </IonButton>
+              </Form>
+            )}
+          </Formik>
+        </IonContent>
         <FooterComponent />
       </IonPage>
     </>

@@ -5,6 +5,7 @@
     background-color: rgba(153, 132, 184, 1);
     ion-toolbar{
         display: flex;
+        background-color: rgba(153, 132, 184, 1);
     }
     ion-title{
         background-color: rgba(153, 132, 184, 1);

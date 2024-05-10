@@ -14,12 +14,38 @@
 }
 
 .profile_info_row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+    text-align: center;
+
+    span {
+        text-align: left;
+        font-size: small;
+    }
+
+
 }
 
 .profile_text {
-    margin-right: auto;
+    text-align: right;
+    margin-right: 3em;
+
+
 }
 
+.my-large-button {
+
+    border-radius: 30px;
+    background: #9884b8;
+    color: white;
+    border-width: 0px;
+    --background-hover: #85267c;
+    --background-activated: #85267c;
+    --background-focused: #85267c;
+
+    --box-shadow: 0px 7px 9px -2px rgba(133, 38, 124, 1);
+    --border-width: 1px;
+    --border-color: #9884b8;
+    --border-style: solid;
+    --border-width: 1px;
+
+}

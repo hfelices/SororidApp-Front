@@ -3,7 +3,7 @@ import "../Layout.css";
 import { IonFooter, IonTitle, IonToolbar } from "@ionic/react";
 export function FooterComponent() {
   return (
-    <IonFooter className="my_footer ion-padding">
+    <IonFooter className="my_footer">
       <IonToolbar>
         <IonTitle className="my_footer_text">Footer</IonTitle>
       </IonToolbar>

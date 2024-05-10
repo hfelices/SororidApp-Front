@@ -5,9 +5,10 @@ const UserContext = createContext<UserContextTypes.Context>({
   user: {
     id: 0,
     username: "",
+    email:"",
     avatar: "",
     gender: "",
-    town: 0,
+    town: "",
     birthdate: new Date(),
     alertPassword: "",
     onChangeUserProfile: () => {},
@@ -19,9 +20,10 @@ export const UserContextProvider = (props: UserContextTypes.Props) => {
   const [user, setUser] = useState({
     id: 0,
     username: "",
+    email: "",
     avatar: "",
     gender: "",
-    town: 0,
+    town: "",
     birthdate: new Date(),
     alertPassword: "",
     onChangeUserProfile: () => {},
@@ -29,9 +31,10 @@ export const UserContextProvider = (props: UserContextTypes.Props) => {
 
   useEffect(() => {
     localStorage.getItem("user");
+   
     const fetchUser = async () => {
       try {
-        const responseUser = await fetch("http://localhost:8000/api/users", {
+        const responseUser = await fetch("http://localhost:8000/api/users/1", {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -41,7 +44,20 @@ export const UserContextProvider = (props: UserContextTypes.Props) => {
         const responseData = await responseUser.json();
         if (responseData.success === true) {
           console.log("OK! Mensaje:", responseData);
-          setUser(responseData);
+          localStorage.setItem("user", JSON.stringify(responseData));
+          setUser({
+            id: responseData.data.id,
+            username: responseData.profile.name,
+            avatar: "",
+            email: responseData.data.email ,
+            gender: responseData.profile.gender,
+            town: responseData.profile.town,
+            birthdate: new Date(responseData.profile.birthdate),
+            alertPassword: responseData.profile.alert_password,
+            onChangeUserProfile: () => {}, 
+          });
+
+          
         } else {
           console.log("Error! Mensaje:", responseData);
         }
@@ -51,7 +67,14 @@ export const UserContextProvider = (props: UserContextTypes.Props) => {
     };
 
     fetchUser();
+    
   }, []);
+
+  return (
+    <UserContext.Provider value={{ user }}>
+      {children}
+    </UserContext.Provider>
+  )
 };
 
 export default UserContext;
