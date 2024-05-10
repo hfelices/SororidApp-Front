@@ -14,6 +14,8 @@ import {
   IonPage,
   IonModal,
   IonButton,
+  IonDatetimeButton,
+  IonDatetime,
 } from "@ionic/react";
 import { cameraOutline, createOutline } from "ionicons/icons";
 import { FooterComponent, Menu } from "../../components";
@@ -37,7 +39,7 @@ export function Profile() {
 
   const fecha = user.profile.birthdate;
   const fechaFormateada = format(fecha, "dd-MM-yyyy");
-
+  const [selectedDate, setSelectedDate] = useState(user.profile.birthdate);
   const [load, setLoad] = useState(false);
 
   useEffect(() => {
@@ -118,13 +120,29 @@ export function Profile() {
                   <span>Nombre: </span>
                   <Field as={IonInput} className="profile_text" name="nombre" />
                 </IonItem>
-                <IonItem className="profile_info_row">
+                <IonItem className="profile_info_row ">
                   <span>Fecha de Nacimiento: </span>
                   <Field
                     as={IonInput}
-                    className="profile_text"
+                    className="d-none"
                     name="fechaNacimiento"
                   />
+                  <IonDatetimeButton datetime={"time"} className="mx-4" />
+                  <IonModal keepContentsMounted={true}>
+                    <IonDatetime
+                      showDefaultButtons={true}
+                      doneText="Seleccionar"
+                      cancelText="Cancelar"
+                      value={selectedDate}
+                      presentation="date"
+                      id="time"
+                      onIonChange={(e) =>
+                        setSelectedDate(new Date(e.detail.value!))
+                      }
+                    >
+                      <span slot="title">Fecha de Nacimiento</span>
+                    </IonDatetime>
+                  </IonModal>
                 </IonItem>
 
                 <IonItem className="profile_info_row">
