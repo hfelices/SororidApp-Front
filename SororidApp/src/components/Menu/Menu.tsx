@@ -22,8 +22,10 @@ import {
   paperPlaneOutline,
   paperPlaneSharp,
 } from "ionicons/icons";
+import {useNavigate} from 'react-router-dom';
 
 export function Menu() {
+  const navigate = useNavigate();
   interface AppPage {
     url: string;
     iosIcon: string;
@@ -51,6 +53,34 @@ export function Menu() {
       mdIcon: heartSharp,
     },
   ];
+  const logout = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user") || "");
+      console.log(user.authToken)
+      const response = await fetch('http://localhost:8000/api/logout', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.authToken}`,
+        },
+
+      });
+      const responseData = await response.json();
+      if (responseData.success === true) {
+        console.log('OK! Mensaje:', responseData);
+        localStorage.removeItem("user");
+        
+    } else {
+      console.log('Error! Mensaje:', responseData);
+    }
+
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error);
+  }    
+} 
+  
+
 
   return (
     <>
@@ -76,6 +106,17 @@ export function Menu() {
                 </a>
               );
             })}
+            <IonMenuToggle onClick={logout} autoHide={false}>
+              <IonItem>
+                <IonIcon
+                  aria-hidden="true"
+                  slot="start"
+                  ios={heartOutline}
+                  md={heartSharp}
+                />
+                <IonLabel>Logout</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
           </IonList>
         </IonContent>
       </IonMenu>

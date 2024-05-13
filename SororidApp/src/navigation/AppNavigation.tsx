@@ -4,15 +4,16 @@ import { Layout, Menu } from "../components";
 import { Redirect, Route } from "react-router";
 import Page from "../pages/Page";
 import { Login, Profile, Register } from "../pages";
+import { useState } from "react";
 
-
-const user = JSON.parse(localStorage.getItem("user") || "");
-const isAuthenticated = !!user.authToken;
+const userString = localStorage.getItem("user");
+const user = userString ? JSON.parse(userString) : {};
 
 export function AppNavigation() {
+  
+  const [isAuthenticated, setIsAuthenticated] = useState(!!user.authToken);
   return (
     <IonReactRouter>
-      
     <Route path="/login" exact={true}>
       {isAuthenticated ? <Redirect to="/profile" /> : <Login />}
     </Route>
