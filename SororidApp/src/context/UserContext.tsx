@@ -11,6 +11,7 @@ const UserContext = createContext<UserContextTypes.Context>({
     town: "",
     birthdate: new Date(),
     alertPassword: "",
+    authToken: "",
     onChangeUserProfile: () => {},
   },
 });
@@ -26,49 +27,10 @@ export const UserContextProvider = (props: UserContextTypes.Props) => {
     town: "",
     birthdate: new Date(),
     alertPassword: "",
+    authToken: "",
     onChangeUserProfile: () => {},
   });
 
-  useEffect(() => {
-    localStorage.getItem("user");
-   
-    const fetchUser = async () => {
-      try {
-        const responseUser = await fetch("http://localhost:8000/api/users/1", {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        });
-        const responseData = await responseUser.json();
-        if (responseData.success === true) {
-          console.log("OK! Mensaje:", responseData);
-          localStorage.setItem("user", JSON.stringify(responseData));
-          setUser({
-            id: responseData.data.id,
-            username: responseData.profile.name,
-            avatar: "",
-            email: responseData.data.email ,
-            gender: responseData.profile.gender,
-            town: responseData.profile.town,
-            birthdate: new Date(responseData.profile.birthdate),
-            alertPassword: responseData.profile.alert_password,
-            onChangeUserProfile: () => {}, 
-          });
-
-          
-        } else {
-          console.log("Error! Mensaje:", responseData);
-        }
-      } catch (error) {
-        console.error("Error al realizar la solicitud:", error);
-      }
-    };
-
-    fetchUser();
-    
-  }, []);
 
   return (
     <UserContext.Provider value={{ user }}>

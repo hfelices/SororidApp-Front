@@ -19,21 +19,37 @@ export  function Login() {
     const formik = useFormik({
         initialValues: { 
           email: "",
-          contrasena: "",
+          password: "",
         },
         validationSchema: Yup.object({
           email: Yup.string()
             .email("Correo electrónico inválido")
             .required("El correo electrónico es obligatorio"),
-          contrasena: Yup.string()
+            password: Yup.string()
             .required("La contraseña es obligatoria")
             .min(6, "La contraseña debe tener al menos 6 caracteres"),
         }),
-        onSubmit: (values) => {
-          // Aquí puedes agregar la lógica para enviar los datos del formulario a tu backend
-          setTimeout(() => {
-            console.log("Formulario enviado:", values);
-          }, 500);
+        onSubmit: async (values) => {
+            try {
+              const response = await fetch('http://localhost:8000/api/login', {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: values.email, password: values.password}),
+              });
+              const responseData = await response.json();
+              if (responseData.success === true) {
+                console.log('OK! Mensaje:', responseData);
+                localStorage.setItem("user", JSON.stringify(responseData));
+            } else {
+              console.log('Error! Mensaje:', responseData);
+            }
+            } catch (error) {
+              console.error('Error al realizar la solicitud:', error);
+            }        
+        
         },
       });
     
@@ -63,11 +79,11 @@ export  function Login() {
                   <IonLabel position="stacked">Contraseña</IonLabel>
                   <IonInput
                     type="password"
-                    value={formik.values.contrasena}
+                    value={formik.values.password}
                     onIonChange={(e) =>
-                      formik.setFieldValue("contrasena", e.detail.value!)
+                      formik.setFieldValue("password", e.detail.value!)
                     }
-                    onBlur={formik.handleBlur("contrasena")}
+                    onBlur={formik.handleBlur("password")}
                     required
                   ></IonInput>
                 </IonItem>
@@ -78,8 +94,8 @@ export  function Login() {
                   {formik.touched.email && formik.errors.email && (
                     <div>{formik.errors.email}</div>
                   )}
-                  {formik.touched.contrasena && formik.errors.contrasena && (
-                    <div>{formik.errors.contrasena}</div>
+                  {formik.touched.password && formik.errors.password && (
+                    <div>{formik.errors.password}</div>
                   )}
                  
                 </div>
@@ -89,7 +105,6 @@ export  function Login() {
                   type="submit"
                   shape="round"
                   fill="outline"
-                  onClick={() => formik.handleSubmit()}
                 >
                   {" "}
                   {formik.isSubmitting ? <IonSpinner name="circles" color="light" /> : "Entrar"}

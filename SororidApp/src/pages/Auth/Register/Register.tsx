@@ -36,7 +36,7 @@ export function Register() {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await fetch('http://localhost:8000/api/users', {
+        const response = await fetch('http://localhost:8000/api/register', {
           method: 'POST',
           headers: {
             Accept: 'application/json',

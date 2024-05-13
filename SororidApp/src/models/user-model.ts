@@ -7,6 +7,7 @@ export interface UserModel {
     town: string;
     birthdate: Date;
     alertPassword: string;
+    authToken: string;
     onChangeUserProfile: (user: UserModel) => void;
     
   }

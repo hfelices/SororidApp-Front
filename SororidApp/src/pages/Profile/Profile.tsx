@@ -36,9 +36,11 @@ export function Profile() {
     nonbinary: "No binario",
   };
   var gender = genderMap[user.profile.gender];
-
+  var fechaFormateada = format(new Date(), "dd-MM-yyyy");
   const fecha = user.profile.birthdate;
-  const fechaFormateada = format(fecha, "dd-MM-yyyy");
+  if (fecha) {
+    fechaFormateada = format(fecha, "dd-MM-yyyy");
+  }
   const [selectedDate, setSelectedDate] = useState(user.profile.birthdate);
   const [load, setLoad] = useState(false);
 
@@ -98,7 +100,7 @@ export function Profile() {
           </div>
 
           <IonItem>
-            <IonText className="mt-2">{user.data.email}</IonText>
+            <IonText className="mt-2">{user.user.email}</IonText>
           </IonItem>
         </IonHeader>
 

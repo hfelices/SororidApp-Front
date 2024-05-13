@@ -5,29 +5,47 @@ import { Redirect, Route } from "react-router";
 import Page from "../pages/Page";
 import { Login, Profile, Register } from "../pages";
 
+
+const user = JSON.parse(localStorage.getItem("user") || "");
+const isAuthenticated = !!user.authToken;
+
 export function AppNavigation() {
   return (
     <IonReactRouter>
-      <Route path="/profile" exact={true}>
-        <Profile />
-      </Route>
+      
+    <Route path="/login" exact={true}>
+      {isAuthenticated ? <Redirect to="/profile" /> : <Login />}
+    </Route>
 
-      <Route path="/login" exact={true}>
-        <Login />
-      </Route>
-      <Route path="/register" exact={true}>
-        <Register />
-      </Route>
+    <Route path="/register" exact={true}>
+      {isAuthenticated ? <Redirect to="/profile" /> : <Register />}
+    </Route>
 
-      <Route path="/" exact={true}>
-        <Menu />
-        <Redirect to="/folder/Inbox" />
-      </Route>
-      <Route path="/folder/:name" exact={true}>
+    <Route path="/" exact={true}>
+      {isAuthenticated ? (
+        <>
+          <Menu />
+          <Redirect to="/folder/Inbox" />
+        </>
+      ) : (
+        <Redirect to="/login" />
+      )}
+    </Route>
+
+    <Route path="/folder/:name" exact={true}>
+      {isAuthenticated ? (
         <Layout>
           <Page />
         </Layout>
-      </Route>
+      ) : (
+        <Redirect to="/login" />
+      )}
+    </Route>
+
+    <Route path="/profile" exact={true}>
+      {isAuthenticated ? <Profile /> : <Redirect to="/login" />}
+    </Route>
+
     </IonReactRouter>
   );
 }
