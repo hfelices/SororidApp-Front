@@ -6,16 +6,25 @@ import Page from "../pages/Page";
 import { Login, Profile, Register } from "../pages";
 import { useState } from "react";
 
-const userString = localStorage.getItem("user");
-const user = userString ? JSON.parse(userString) : {};
+const authTokenString = localStorage.getItem("authToken");
+const authToken = authTokenString ? JSON.parse(authTokenString) : {};
 
 export function AppNavigation() {
   
-  const [isAuthenticated, setIsAuthenticated] = useState(!!user.authToken);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const doLogin = () => {
+    setIsAuthenticated(true);
+  };
+
+  const doLogout = () => {
+    setIsAuthenticated(false);
+  };
+  
   return (
     <IonReactRouter>
     <Route path="/login" exact={true}>
-      {isAuthenticated ? <Redirect to="/profile" /> : <Login />}
+      {isAuthenticated ? <Redirect to="/folder/:name" /> : <Login doLogin={doLogin}/>}
     </Route>
 
     <Route path="/register" exact={true}>
@@ -25,7 +34,7 @@ export function AppNavigation() {
     <Route path="/" exact={true}>
       {isAuthenticated ? (
         <>
-          <Menu />
+          <Menu doLogout={doLogout}/>
           <Redirect to="/folder/Inbox" />
         </>
       ) : (
@@ -35,7 +44,7 @@ export function AppNavigation() {
 
     <Route path="/folder/:name" exact={true}>
       {isAuthenticated ? (
-        <Layout>
+        <Layout doLogout={doLogout}>
           <Page />
         </Layout>
       ) : (

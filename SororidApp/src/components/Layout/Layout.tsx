@@ -14,14 +14,11 @@ import {
 import { Menu } from "../Menu";
 import image from "../../assets/neandermark.jpeg";
 import { FooterComponent } from "./Footer";
-interface LayoutProps {
-  children: ReactNode;
-}
-
-export function Layout({ children }: LayoutProps) {
+export const Layout = ({ children, doLogout }) =>  {
+  
   return (
     <>
-      <Menu />
+      <Menu doLogout={doLogout}/>
       <div id="main">
         <IonContent>{children}</IonContent>
       </div>

@@ -11,6 +11,7 @@ import {
   IonMenuButton,
   IonMenuToggle,
   IonNote,
+  useIonRouter,
 } from "@ionic/react";
 import image from "../../assets/neandermark.jpeg";
 import "./Menu.css";
@@ -22,18 +23,13 @@ import {
   paperPlaneOutline,
   paperPlaneSharp,
 } from "ionicons/icons";
-import {useNavigate} from 'react-router-dom';
 
-export function Menu() {
-  const navigate = useNavigate();
-  interface AppPage {
-    url: string;
-    iosIcon: string;
-    mdIcon: string;
-    title: string;
-  }
-
-  const appPages: AppPage[] = [
+interface MenuProps {
+  doLogout: () => void; // Definimos la prop doLogout como una función que no recibe argumentos y no devuelve nada
+}
+export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
+  const router = useIonRouter();
+  const appPages= [
     {
       title: "Profile",
       url: "/profile",
@@ -55,21 +51,25 @@ export function Menu() {
   ];
   const logout = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user") || "");
-      console.log(user.authToken)
+      const authToken = JSON.parse(localStorage.getItem("authToken") || "");
       const response = await fetch('http://localhost:8000/api/logout', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.authToken}`,
+          Authorization: `Bearer ${authToken}`,
         },
 
       });
       const responseData = await response.json();
       if (responseData.success === true) {
         console.log('OK! Mensaje:', responseData);
+        localStorage.removeItem("authToken");
         localStorage.removeItem("user");
+        localStorage.removeItem("profile");
+        localStorage.removeItem("town");
+        doLogout();
+        router.push('/login');
         
     } else {
       console.log('Error! Mensaje:', responseData);
