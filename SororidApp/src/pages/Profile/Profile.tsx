@@ -23,24 +23,15 @@ import {
 import { cameraOutline } from "ionicons/icons";
 import { FooterComponent } from "../../components";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
-import useUser from "../../hooks/useUser";
-import { format } from "date-fns";
 import * as Yup from "yup";
 
 export function Profile() {
-  const modal = useRef<HTMLIonModalElement>(null);
   const user = JSON.parse(localStorage.getItem("user") || "");
   const authToken = JSON.parse(localStorage.getItem("authToken") || "");
   const profile = JSON.parse(localStorage.getItem("profile") || "");
   const town = JSON.parse(localStorage.getItem("town") || "");
-
-  var nuevaFecha = new Date();
-  const fecha = profile.birthdate;
-  if (fecha) {
-    nuevaFecha = fecha
-  }
-  const fechaFormateada = format(nuevaFecha, "dd-MM-yyyy")
-  const [selectedDate, setSelectedDate] = useState(profile.birthdate || new Date());
+  const fecha = new Date()
+  const [selectedDate, setSelectedDate] = useState(profile.birthdate || fecha.toISOString());
   const [load, setLoad] = useState(false);
 
   useEffect(() => {
@@ -65,6 +56,7 @@ export function Profile() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      console.log("le di al boton de las narices")
       try {
         const response = await fetch('http://localhost:8000/api/profiles/' + user.id, {
           method: 'PUT',
@@ -105,7 +97,7 @@ export function Profile() {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${authToken}`,
           },
-          body: JSON.stringify({ profile_image: image.webPath}),
+          body: JSON.stringify({ profile_image: image.webPath }),
         });
         console.log(image.webPath)
         const responseData = await response.json();
@@ -172,10 +164,7 @@ export function Profile() {
                     let birthday = new Date(e.detail.value!)
                     setSelectedDate(birthday)
                     formik.handleChange(e)
-                  }
-                  }
-
-                >
+                  }}>
                   <span slot="title">Fecha de Nacimiento</span>
                 </IonDatetime>
               </IonModal>
@@ -198,8 +187,8 @@ export function Profile() {
                 onIonChange={(e) => formik.setFieldValue("sexo", e.detail.value)}
                 interface="popover"
               >
-                <IonSelectOption value="male">Hombre</IonSelectOption>
                 <IonSelectOption value="female">Mujer</IonSelectOption>
+                <IonSelectOption value="male">Hombre</IonSelectOption>
                 <IonSelectOption value="nonbinary">No binario</IonSelectOption>
               </IonSelect>
             </IonItem>
@@ -213,6 +202,15 @@ export function Profile() {
                 onIonChange={formik.handleChange}
               />
             </IonItem>
+            {Object.keys(formik.errors).length > 0 && (
+              <div className="ion-text-center mt-3">
+                {Object.keys(formik.errors).map((key) => (
+                  <IonText color="danger" key={key}>
+                    {formik.errors[key]}
+                  </IonText>
+                ))}
+              </div>
+            )}
             <IonButton
               expand="block"
               className="mt-3 my-large-button"

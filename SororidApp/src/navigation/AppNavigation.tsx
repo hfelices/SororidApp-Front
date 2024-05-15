@@ -11,7 +11,7 @@ const authToken = authTokenString ? JSON.parse(authTokenString) : {};
 
 export function AppNavigation() {
   
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!authToken);
 
   const doLogin = () => {
     setIsAuthenticated(true);
