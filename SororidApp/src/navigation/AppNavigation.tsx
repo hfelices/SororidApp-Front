@@ -1,16 +1,19 @@
 import { IonReactRouter } from "@ionic/react-router";
-import React from "react";
-import { Layout, Menu } from "../components";
+import React, { useEffect, useState } from "react";
+import { Layout } from "../components";
 import { Redirect, Route } from "react-router";
 import Page from "../pages/Page";
 import { Login, Profile, Register } from "../pages";
-import { useState } from "react";
-
-const authTokenString = localStorage.getItem("authToken");
-const authToken = authTokenString ? JSON.parse(authTokenString) : {};
 
 export function AppNavigation() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("authToken")
+  );
+
+  useEffect(() => {
+    const authTokenString = localStorage.getItem("authToken");
+    setIsAuthenticated(!!authTokenString);
+  }, []);
 
   const doLogin = () => {
     setIsAuthenticated(true);
@@ -22,49 +25,35 @@ export function AppNavigation() {
 
   return (
     <IonReactRouter>
-      <Route path="/login" exact={true}>
-        {isAuthenticated ? (
-          <Redirect to="/folder/:name" />
-        ) : (
-          <Login doLogin={doLogin} />
-        )}
-      </Route>
-
-      <Route path="/register" exact={true}>
-        {isAuthenticated ? <Redirect to="/profile" /> : <Register />}
-      </Route>
-
-      <Route path="/" exact={true}>
-        {isAuthenticated ? (
-          <>
-            <Redirect to="/folder/Inbox" />
-          </>
-        ) : (
-          <Redirect to="/login" />
-        )}
-      </Route>
-
-      <Route path="/folder/:name" exact={true}>
-        {isAuthenticated ? (
-          <Layout doLogout={doLogout}>
-            <Page />
-          </Layout>
-        ) : (
-          <Redirect to="/login" />
-        )}
-      </Route>
-
-      <Route path="/profile" exact={true}>
-        {isAuthenticated ? (
-          <>
-           
-              <Profile />
-           
-          </>
-        ) : (
-          <Redirect to="/login" />
-        )}
-      </Route>
+      <Route
+        render={({ location }) => {
+          // Verificar la autenticación antes de renderizar la ruta
+          if (!isAuthenticated && location.pathname !== "/login") {
+            return <Redirect to="/login" />;
+          }
+          return (
+            <>
+              <Route path="/login" exact>
+                {isAuthenticated ? <Redirect to="/folder/:name" /> : <Login doLogin={doLogin} />}
+              </Route>
+              <Route path="/register" exact>
+                {isAuthenticated ? <Redirect to="/profile" /> : <Register />}
+              </Route>
+              <Route path="/" exact>
+                {isAuthenticated ? <Redirect to="/folder/Inbox" /> : <Redirect to="/login" />}
+              </Route>
+              <Route path="/folder/:name" exact>
+                <Layout doLogout={doLogout}>
+                  <Page />
+                </Layout>
+              </Route>
+              <Route path="/profile" exact>
+                <Profile />
+              </Route>
+            </>
+          );
+        }}
+      />
     </IonReactRouter>
   );
 }

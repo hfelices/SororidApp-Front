@@ -83,7 +83,6 @@ export function Profile() {
         const responseData = await response.json();
         if (responseData.success === true) {
           console.log("OK! Mensaje:", responseData);
-          // localStorage.removeItem("profile");
           localStorage.setItem("profile", JSON.stringify(responseData.data));
         } else {
           console.log("Error! Mensaje:", responseData);
