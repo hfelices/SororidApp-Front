@@ -25,6 +25,9 @@
 
 }
 
+.profile_selector_text{
+    margin-left: 65%;
+}
 .profile_text {
     text-align: right;
     margin-right: 3em;
