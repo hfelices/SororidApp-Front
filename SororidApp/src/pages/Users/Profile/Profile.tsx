@@ -21,10 +21,10 @@ import {
   IonSelectOption,
 } from "@ionic/react";
 import { cameraOutline } from "ionicons/icons";
-import { FooterComponent, Menu } from "../../components";
+import { FooterComponent, Menu } from "../../../components";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import * as Yup from "yup";
-import {API_URL, URL} from "../../constants";
+import {API_URL, URL} from "../../../constants";
 
 export function Profile() {
   const user = JSON.parse(localStorage.getItem("user") || "");

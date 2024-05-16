@@ -3,14 +3,16 @@ import React from "react";
 import { Layout, Menu } from "../components";
 import { Redirect, Route } from "react-router";
 import Page from "../pages/Page";
-import { Login, Profile, Register } from "../pages";
+import { Login, Register, Profile } from "../pages";
 import { useState } from "react";
+import { Explore } from "../pages/Users/Explore";
+import { UserDetails } from "../pages/Users/UserDetails";
 
 const authTokenString = localStorage.getItem("authToken");
 const authToken = authTokenString ? JSON.parse(authTokenString) : {};
 
 export function AppNavigation() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!authToken);
 
   const doLogin = () => {
     setIsAuthenticated(true);
@@ -43,6 +45,17 @@ export function AppNavigation() {
           <Redirect to="/login" />
         )}
       </Route>
+      <Route path="/explore" exact={true}>
+        {isAuthenticated ? (
+          <>
+            <Layout doLogout={doLogout}>
+              <Explore />
+            </Layout>
+          </>
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
 
       <Route path="/folder/:name" exact={true}>
         {isAuthenticated ? (
@@ -54,12 +67,20 @@ export function AppNavigation() {
         )}
       </Route>
 
+      <Route path="/user-details/:id" exact={true}>
+        {isAuthenticated ? (
+          <Layout doLogout={doLogout}>
+            <UserDetails />
+          </Layout>
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
+
       <Route path="/profile" exact={true}>
         {isAuthenticated ? (
           <>
-           
-              <Profile />
-           
+            <Profile />
           </>
         ) : (
           <Redirect to="/login" />
