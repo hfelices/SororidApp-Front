@@ -27,8 +27,7 @@ export function AppNavigation() {
     <IonReactRouter>
       <Route
         render={({ location }) => {
-          // Verificar la autenticación antes de renderizar la ruta
-          if (!isAuthenticated && location.pathname !== "/login") {
+          if (!isAuthenticated && location.pathname !== "/login" && location.pathname !== "/register") {
             return <Redirect to="/login" />;
           }
           return (
@@ -37,7 +36,7 @@ export function AppNavigation() {
                 {isAuthenticated ? <Redirect to="/folder/:name" /> : <Login doLogin={doLogin} />}
               </Route>
               <Route path="/register" exact>
-                {isAuthenticated ? <Redirect to="/profile" /> : <Register />}
+                {!isAuthenticated ? <Register /> : < Redirect to="/profile"/>}
               </Route>
               <Route path="/" exact>
                 {isAuthenticated ? <Redirect to="/folder/Inbox" /> : <Redirect to="/login" />}
