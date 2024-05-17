@@ -121,7 +121,7 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
         </IonContent>
       </IonMenu>
 
-      <IonButtons slot="start" className="ion-padding">
+      <IonButtons slot="start" className="ion-padding layout_menu_buttons">
         <IonMenuButton className="layout_menu_button">
           <IonAvatar className="layout_menu_button">
             <img src={image} alt="" />

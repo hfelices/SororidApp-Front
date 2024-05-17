@@ -1,10 +1,94 @@
-.large-avatar {
-   border-radius: 50%;
-    width: 10em; /* Ajusta este valor según el tamaño que desees */
-    height: 10em; /* Ajusta este valor según el tamaño que desees */
+.all{
+  font-family: "Comfortaa", sans-serif  !important;
   }
 
-  .user-details{
-    display: flex;
-    flex-direction: column;
+.large-avatar {
+  border-radius: 50%;
+  width: 10em; /* Ajusta este valor según el tamaño que desees */
+  height: 10em; /* Ajusta este valor según el tamaño que desees */
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-buttons {
+  ion-button {
+    margin-top: 10vh;
+    border-radius: 30px;
+    background: #9884b8;
+    color: white !important;
+    border-width: 0px;
+    --background-hover: #85267c;
+    --background-activated: #85267c;
+    --background-focused: #85267c;
+
+    --box-shadow: 0px 7px 9px -2px rgba(133, 38, 124, 1);
+    --border-width: 1px;
+    --border-color: #9884b8;
+    --border-style: solid;
+    --border-width: 1px;
+    
   }
+}
+
+.custom-action-sheet {
+  --background: transparent; /* Hace el fondo del action sheet transparente */
+  font-weight: bold;
+  font-family: "Comfortaa", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.action-sheet-title {
+  color: white !important;
+  background-color: #85267c;
+  border-radius: 1em 1em 0 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Comfortaa", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.custom-action-sheet .action-sheet-button {
+  text-align: center;
+  background-color: #9884b8; /* Cambia el color de fondo aquí */
+  color: white; /* Cambia el color del texto aquí */
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+  }
+}
+
+.custom-action-sheet .action-sheet-button:not(.action-sheet-cancel):last-child {
+  border-radius: 0 0 1em 1em;
+}
+
+.custom-action-sheet .action-sheet-cancel {
+  background-color: #fc1100; /* Color del botón de cancelar */
+  color: white;
+
+  margin-top: 1em;
+  border-radius: 2em 2em 2em 2em;
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+  }
+}
+
+/* Opcional: Estilo para el fondo de la hoja de acción */
+.custom-action-sheet ion-backdrop {
+  --background: transparent; /* Hace el fondo de la hoja de acción transparente */
+}

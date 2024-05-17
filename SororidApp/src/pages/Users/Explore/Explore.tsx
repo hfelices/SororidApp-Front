@@ -7,6 +7,8 @@ import {
   IonItem,
   IonAvatar,
   IonLabel,
+  IonHeader,
+  IonSearchbar,
 } from "@ionic/react";
 import "./Explore.css";
 import { API_URL, URL } from "../../../constants";
@@ -74,7 +76,14 @@ export function Explore() {
   };
 
   return (
-    <IonContent>
+    <>
+   
+    
+ 
+
+   
+    <IonSearchbar animated={true} placeholder="Buscar por Nombre"></IonSearchbar>
+    <IonContent className="ion-padding">
     <IonList>
       {users.map((user, index) => (
         user.profile.name ? (
@@ -93,6 +102,7 @@ export function Explore() {
               <IonLabel className="text-center">{user.profile.name}</IonLabel>
             </IonItem>
           </Link>
+          
         ) : <></>
       ))}
     </IonList>
@@ -104,5 +114,6 @@ export function Explore() {
       <IonInfiniteScrollContent loadingText="Cargando más usuarios..."></IonInfiniteScrollContent>
     </IonInfiniteScroll>
   </IonContent>
+  </>
   );
 }
