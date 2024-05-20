@@ -12,9 +12,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import image from "../../../assets/SororidApp.png";
 import { useState } from "react";
-
+import { API_URL } from "../../../constants";
 import "../Auth.css";
-
 
 export function Register() {
   const formik = useFormik({
@@ -27,7 +26,7 @@ export function Register() {
       email: Yup.string()
         .email("Correo electrónico inválido")
         .required("El correo electrónico es obligatorio"),
-        password: Yup.string()
+      password: Yup.string()
         .required("La contraseña es obligatoria")
         .min(6, "La contraseña debe tener al menos 6 caracteres"),
       confirmarContrasena: Yup.string()
@@ -36,24 +35,25 @@ export function Register() {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await fetch('http://localhost:8000/api/register', {
-          method: 'POST',
+        const response = await fetch(API_URL + "register", {
+          method: "POST",
           headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+            Accept: "application/json",
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email: values.email, password: values.password}),
+          body: JSON.stringify({
+            email: values.email,
+            password: values.password,
+          }),
         });
         const responseData = await response.json();
         if (responseData.success === true) {
-          console.log('OK! Mensaje:', responseData);
-
-      } else {
-        console.log('Error! Mensaje:', responseData);
-      }
-
+          console.log("OK! Mensaje:", responseData);
+        } else {
+          console.log("Error! Mensaje:", responseData);
+        }
       } catch (error) {
-        console.error('Error al realizar la solicitud:', error);
+        console.error("Error al realizar la solicitud:", error);
       }
     },
   });
@@ -66,7 +66,6 @@ export function Register() {
         </IonAvatar>
         <IonContent className="ion-padding">
           <form onSubmit={formik.handleSubmit}>
-    
             <IonItem>
               <IonLabel position="stacked">Correo electrónico</IonLabel>
               <IonInput

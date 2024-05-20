@@ -13,6 +13,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import image from "../../../assets/SororidApp.png";
 import { useState } from "react";
+import { API_URL } from "../../../constants";
 
 import "../Auth.css";
 
@@ -20,7 +21,6 @@ interface LoginProps {
   doLogin: () => void;
 }
 export const Login: React.FC<LoginProps> = ({ doLogin }) => {
-
   const router = useIonRouter();
   const formik = useFormik({
     initialValues: {
@@ -37,30 +37,35 @@ export const Login: React.FC<LoginProps> = ({ doLogin }) => {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await fetch('http://localhost:8000/api/login', {
-          method: 'POST',
+        const response = await fetch(API_URL + "login", {
+          method: "POST",
           headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+            Accept: "application/json",
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email: values.email, password: values.password }),
+          body: JSON.stringify({
+            email: values.email,
+            password: values.password,
+          }),
         });
         const responseData = await response.json();
         if (responseData.success === true) {
-          console.log('OK! Mensaje:', responseData);
-          localStorage.setItem("authToken", JSON.stringify(responseData.authToken));
+          console.log("OK! Mensaje:", responseData);
+          localStorage.setItem(
+            "authToken",
+            JSON.stringify(responseData.authToken)
+          );
           localStorage.setItem("user", JSON.stringify(responseData.user));
           localStorage.setItem("profile", JSON.stringify(responseData.profile));
           localStorage.setItem("town", JSON.stringify(responseData.town));
           doLogin();
-          router.push('/profile');
+          router.push("/profile");
         } else {
-          console.log('Error! Mensaje:', responseData);
+          console.log("Error! Mensaje:", responseData);
         }
       } catch (error) {
-        console.error('Error al realizar la solicitud:', error);
+        console.error("Error al realizar la solicitud:", error);
       }
-
     },
   });
 
@@ -75,7 +80,6 @@ export const Login: React.FC<LoginProps> = ({ doLogin }) => {
         </IonAvatar>
         <IonContent className="ion-padding">
           <form onSubmit={formik.handleSubmit}>
-
             <IonItem>
               <IonLabel position="stacked">Correo electrónico</IonLabel>
               <IonInput
@@ -102,16 +106,13 @@ export const Login: React.FC<LoginProps> = ({ doLogin }) => {
               ></IonInput>
             </IonItem>
 
-
             <div className="errors">
-
               {formik.touched.email && formik.errors.email && (
                 <div>{formik.errors.email}</div>
               )}
               {formik.touched.password && formik.errors.password && (
                 <div>{formik.errors.password}</div>
               )}
-
             </div>
 
             <IonButton
@@ -121,9 +122,12 @@ export const Login: React.FC<LoginProps> = ({ doLogin }) => {
               fill="outline"
             >
               {" "}
-              {formik.isSubmitting ? <IonSpinner name="circles" color="light" /> : "Entrar"}
+              {formik.isSubmitting ? (
+                <IonSpinner name="circles" color="light" />
+              ) : (
+                "Entrar"
+              )}
             </IonButton>
-
           </form>
           <IonButton expand="block" onClick={handleGoToRegister}>
             Ir a Registro
@@ -132,4 +136,4 @@ export const Login: React.FC<LoginProps> = ({ doLogin }) => {
       </IonPage>
     </>
   );
-}
+};
