@@ -11,3 +11,7 @@
         background-color: rgba(153, 132, 184, 1);
    }
 }
+
+#main{
+    height: 90vh;
+}

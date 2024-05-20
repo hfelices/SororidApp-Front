@@ -21,10 +21,11 @@ import {
   IonSelectOption,
 } from "@ionic/react";
 import { cameraOutline } from "ionicons/icons";
-import { FooterComponent, Menu } from "../../components";
+import { FooterComponent, Menu } from "../../../components";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import * as Yup from "yup";
-import {API_URL, URL} from "../../constants";
+import {API_URL, URL} from "../../../constants";
+import defaultAvatar from "../../../assets/default-avatar.jpg";
 
 export function Profile() {
   const user = JSON.parse(localStorage.getItem("user") || "");
@@ -143,9 +144,15 @@ export function Profile() {
       <IonPage>
         <IonHeader className="profile_header ion-padding">
           <div className="d-flex justify-content-center align-items-center">
-            <IonAvatar>
-              <img src={userImage} alt="" />
-            </IonAvatar>
+          <img
+                className="large-avatar"
+                src={
+                  user.profile_img_path
+                    ? `${URL}${user.profile.profile_img_path}`
+                    : defaultAvatar
+                }
+                alt="avatar"
+              />
             <IonButton fill="clear" onClick={openCamera}>
               <IonIcon
                 className="profile_icon"

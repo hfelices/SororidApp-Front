@@ -3,7 +3,13 @@ import React, { useEffect, useState } from "react";
 import { Layout } from "../components";
 import { Redirect, Route } from "react-router";
 import Page from "../pages/Page";
-import { Login, Profile, Register } from "../pages";
+import { Login, Register, Profile } from "../pages";
+import { useState } from "react";
+import { Explore } from "../pages/Users/Explore";
+import { UserDetails } from "../pages/Users/UserDetails";
+
+const authTokenString = localStorage.getItem("authToken");
+const authToken = authTokenString ? JSON.parse(authTokenString) : {};
 
 export function AppNavigation() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -25,34 +31,68 @@ export function AppNavigation() {
 
   return (
     <IonReactRouter>
-      <Route
-        render={({ location }) => {
-          if (!isAuthenticated && location.pathname !== "/login" && location.pathname !== "/register") {
-            return <Redirect to="/login" />;
-          }
-          return (
-            <>
-              <Route path="/login" exact>
-                {isAuthenticated ? <Redirect to="/folder/:name" /> : <Login doLogin={doLogin} />}
-              </Route>
-              <Route path="/register" exact>
-                {!isAuthenticated ? <Register /> : < Redirect to="/profile"/>}
-              </Route>
-              <Route path="/" exact>
-                {isAuthenticated ? <Redirect to="/folder/Inbox" /> : <Redirect to="/login" />}
-              </Route>
-              <Route path="/folder/:name" exact>
-                <Layout doLogout={doLogout}>
-                  <Page />
-                </Layout>
-              </Route>
-              <Route path="/profile" exact>
-                <Profile />
-              </Route>
-            </>
-          );
-        }}
-      />
+      <Route path="/login" exact={true}>
+        {isAuthenticated ? (
+          <Redirect to="/folder/:name" />
+        ) : (
+          <Login doLogin={doLogin} />
+        )}
+      </Route>
+
+      <Route path="/register" exact={true}>
+        {isAuthenticated ? <Redirect to="/profile" /> : <Register />}
+      </Route>
+
+      <Route path="/" exact={true}>
+        {isAuthenticated ? (
+          <>
+            <Redirect to="/folder/Inbox" />
+          </>
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
+      <Route path="/explore" exact={true}>
+        {isAuthenticated ? (
+          <>
+            <Layout doLogout={doLogout}>
+              <Explore />
+            </Layout>
+          </>
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
+
+      <Route path="/folder/:name" exact={true}>
+        {isAuthenticated ? (
+          <Layout doLogout={doLogout}>
+            <Page />
+          </Layout>
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
+
+      <Route path="/user-details/:id" exact={true}>
+        {isAuthenticated ? (
+          <Layout doLogout={doLogout}>
+            <UserDetails />
+          </Layout>
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
+
+      <Route path="/profile" exact={true}>
+        {isAuthenticated ? (
+          <>
+            <Profile />
+          </>
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
     </IonReactRouter>
   );
 }

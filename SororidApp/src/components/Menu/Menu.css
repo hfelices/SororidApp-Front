@@ -111,7 +111,9 @@ ion-note {
 ion-item.selected {
   --color: var(--ion-color-primary);
 } 
-
+.layout_menu_buttons{
+  max-height: 80px;
+}
 
 .layout_menu_button {
   height: 60px;
