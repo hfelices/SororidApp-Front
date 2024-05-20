@@ -1,6 +1,4 @@
-.all{
-  font-family: "Comfortaa", sans-serif  !important;
-  }
+
 
 .large-avatar {
   border-radius: 50%;
@@ -15,7 +13,7 @@
 
 .detail-buttons {
   ion-button {
-    margin-top: 10vh;
+
     border-radius: 30px;
     background: #9884b8;
     color: white !important;
@@ -35,46 +33,39 @@
 
 .custom-action-sheet {
   --background: transparent; /* Hace el fondo del action sheet transparente */
-  font-weight: bold;
-  font-family: "Comfortaa", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
 }
 
-.action-sheet-title {
-  color: white !important;
-  background-color: #85267c;
-  border-radius: 1em 1em 0 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Comfortaa", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
+.custom-action-sheet .action-sheet-title {
+  background-color:#85267c;
+  color: white;
+  font-size: 15px;
+  padding: 2em 0 2em 0;
+  /* Otros estilos que desees aplicar */
 }
+
+
 
 .custom-action-sheet .action-sheet-button {
   text-align: center;
   background-color: #9884b8; /* Cambia el color de fondo aquí */
   color: white; /* Cambia el color del texto aquí */
+  border-top: 1px solid #b9b7b7;
   span {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: "Comfortaa", sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
+    font-size: 15px;
   }
 }
 
 .custom-action-sheet .action-sheet-button:not(.action-sheet-cancel):last-child {
   border-radius: 0 0 1em 1em;
+  
 }
 
 .custom-action-sheet .action-sheet-cancel {
   background-color: #fc1100; /* Color del botón de cancelar */
-  color: white;
+  color: #fc1100;
 
   margin-top: 1em;
   border-radius: 2em 2em 2em 2em;
@@ -82,13 +73,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: "Comfortaa", sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
+    font-size: 20px;
   }
 }
 
-/* Opcional: Estilo para el fondo de la hoja de acción */
-.custom-action-sheet ion-backdrop {
-  --background: transparent; /* Hace el fondo de la hoja de acción transparente */
-}
+

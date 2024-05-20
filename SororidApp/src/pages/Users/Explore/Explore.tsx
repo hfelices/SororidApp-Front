@@ -77,13 +77,9 @@ export function Explore() {
 
   return (
     <>
-   
-    
- 
-
-   
+   <div className="main-content">
     <IonSearchbar animated={true} placeholder="Buscar por Nombre"></IonSearchbar>
-    <IonContent className="ion-padding">
+    <IonContent className="ion-padding ">
     <IonList>
       {users.map((user, index) => (
         user.profile.name ? (
@@ -114,6 +110,7 @@ export function Explore() {
       <IonInfiniteScrollContent loadingText="Cargando más usuarios..."></IonInfiniteScrollContent>
     </IonInfiniteScroll>
   </IonContent>
+  </div>
   </>
   );
 }

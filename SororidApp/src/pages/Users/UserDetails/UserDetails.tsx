@@ -61,7 +61,7 @@ export function UserDetails() {
       ) : (
         <>
           <div className="all">
-          <IonHeader className="profile_header ion-padding mt-5">
+          <IonHeader className="profile_header ion-padding ">
             <div className="d-flex align-items-center justify-content-center flex-column">
               <img
                 className="large-avatar"
@@ -89,7 +89,7 @@ export function UserDetails() {
               expand="block"
               shape="round"
               fill="outline"
-              className="mt-4 light"
+             
             >
               Añadir Contacto
             </IonButton>
@@ -99,7 +99,7 @@ export function UserDetails() {
               expand="block"
               shape="round"
               fill="outline"
-              className="mt-5"
+              className="mt-3"
             >
               Bloquear
             </IonButton>
@@ -155,7 +155,7 @@ export function UserDetails() {
                 },
               },
             ]}
-          ></IonActionSheet>
+          />
           </div>
         </>
       )}
