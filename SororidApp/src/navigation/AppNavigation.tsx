@@ -4,7 +4,6 @@ import { Layout } from "../components";
 import { Redirect, Route } from "react-router";
 import Page from "../pages/Page";
 import { Login, Register, Profile } from "../pages";
-import { useState } from "react";
 import { Explore } from "../pages/Users/Explore";
 import { UserDetails } from "../pages/Users/UserDetails";
 
