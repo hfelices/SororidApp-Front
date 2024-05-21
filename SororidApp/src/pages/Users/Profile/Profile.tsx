@@ -4,9 +4,7 @@ import "./Profile.css";
 // import image from "../../assets/neandermark.jpeg";
 import {
   IonHeader,
-  IonButtons,
   IonInput,
-  IonAvatar,
   IonText,
   IonItem,
   IonIcon,
@@ -19,17 +17,21 @@ import {
   IonLabel,
   IonSelect,
   IonSelectOption,
+  useIonRouter,
 } from "@ionic/react";
 import { cameraOutline } from "ionicons/icons";
 import { FooterComponent, Menu } from "../../../components";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
+import { Filesystem, ReadFileResult } from "@capacitor/filesystem";
 import * as Yup from "yup";
-import {API_URL, URL} from "../../../constants";
+import { API_URL, URL } from "../../../constants";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 
 export function Profile() {
-  const user = JSON.parse(localStorage.getItem("user") || "");
+  const fileInputRef = useRef(null);
+  const router = useIonRouter();
   const authToken = JSON.parse(localStorage.getItem("authToken") || "");
+  const user = JSON.parse(localStorage.getItem("user") || "");
   const profile = JSON.parse(localStorage.getItem("profile") || "");
   const town = JSON.parse(localStorage.getItem("town") || "");
   const fecha = new Date();
@@ -37,10 +39,11 @@ export function Profile() {
     profile.birthdate || fecha.toISOString()
   );
   const [load, setLoad] = useState(false);
-
-  const userImage = URL + profile.profile_img_path
+  const [userImage, setUserImage] = useState(URL + profile.profile_img_path);
 
   useEffect(() => {
+    console.log(userImage);
+
     setLoad(true);
   }, [user]);
 
@@ -64,7 +67,6 @@ export function Profile() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-     
       try {
         const response = await fetch(API_URL + "profiles/" + user.id, {
           method: "PUT",
@@ -94,39 +96,34 @@ export function Profile() {
     },
   });
 
-  const openCamera = async () => {
-    
-    
-    const image = await Camera.getPhoto({
-      resultType: CameraResultType.Uri,
-      source: CameraSource.Camera,
-      quality: 100,
-    });
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("profile_image", file);
 
-    if (image.webPath) {
       try {
         const response = await fetch(
           API_URL + "profiles/" + user.id + "/image",
           {
             method: "POST",
             headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
               Authorization: `Bearer ${authToken}`,
             },
-            body: JSON.stringify({ profile_image: image.webPath }),
+            body: formData,
           }
         );
-        console.log(image.webPath);
+
         const responseData = await response.json();
-        if (responseData.success === true) {
-          console.log("OK! Mensaje:", responseData);
+        if (responseData.success) {
+          console.log("Imagen subida con éxito:", responseData);
           localStorage.setItem("profile", JSON.stringify(responseData.data));
+          setUserImage(URL + responseData.data.profile_img_path);
         } else {
-          console.log("Error! Mensaje:", responseData);
+          console.error("Error al subir imagen:", responseData.message);
         }
       } catch (error) {
-        console.error("Error al realizar la solicitud:", error);
+        console.error("Error en la petición:", error);
       }
     }
   };
@@ -139,27 +136,35 @@ export function Profile() {
     return role !== "gesture";
   }
 
+  const handleGoToExplore = () => {
+    router.push("/explore");
+  };
+  const handleIconClick = () => {
+    // Desencadenar el clic en el input de tipo file
+    fileInputRef.current.click();
+  };
   return (
     <>
       <IonPage>
         <IonHeader className="profile_header ion-padding">
           <div className="d-flex justify-content-center align-items-center">
-          <img
-                className="large-avatar"
-                src={
-                  user.profile_img_path
-                    ? `${URL}${user.profile.profile_img_path}`
-                    : defaultAvatar
-                }
-                alt="avatar"
-              />
-            <IonButton fill="clear" onClick={openCamera}>
-              <IonIcon
-                className="profile_icon"
-                slot="icon-only"
-                icon={cameraOutline}
-              />
-            </IonButton>
+            <img
+              className="large-avatar"
+              src={profile.profile_img_path ? userImage : defaultAvatar}
+              alt="avatar"
+            />
+            <IonIcon
+              icon={cameraOutline}
+              color="tertiary"
+              onClick={handleIconClick}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+              ref={fileInputRef}
+            />
           </div>
           <IonItem>
             <IonText className="mt-2">{user.email}</IonText>
@@ -254,6 +259,9 @@ export function Profile() {
               {formik.isSubmitting ? "Enviando..." : "Actualizar"}
             </IonButton>
           </form>
+          <IonButton expand="block" onClick={handleGoToExplore}>
+            Ir a Explorar
+          </IonButton>
         </IonContent>
         <FooterComponent />
       </IonPage>

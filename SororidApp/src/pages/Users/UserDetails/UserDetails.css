@@ -31,44 +31,34 @@
   }
 }
 
-.custom-action-sheet {
-  --background: transparent; /* Hace el fondo del action sheet transparente */
-}
-
 .custom-action-sheet .action-sheet-title {
-  background-color:#85267c;
-  color: white;
+
   font-size: 15px;
   padding: 2em 0 2em 0;
-  /* Otros estilos que desees aplicar */
+  text-align: center;
+  font-weight: bold;
 }
 
 
 
 .custom-action-sheet .action-sheet-button {
   text-align: center;
-  background-color: #9884b8; /* Cambia el color de fondo aquí */
-  color: white; /* Cambia el color del texto aquí */
+  color:#9884b8; 
   border-top: 1px solid #b9b7b7;
   span {
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 15px;
+    font-weight: 700;
   }
 }
 
-.custom-action-sheet .action-sheet-button:not(.action-sheet-cancel):last-child {
-  border-radius: 0 0 1em 1em;
-  
-}
+
 
 .custom-action-sheet .action-sheet-cancel {
-  background-color: #fc1100; /* Color del botón de cancelar */
+ 
   color: #fc1100;
-
-  margin-top: 1em;
-  border-radius: 2em 2em 2em 2em;
   span {
     display: flex;
     align-items: center;

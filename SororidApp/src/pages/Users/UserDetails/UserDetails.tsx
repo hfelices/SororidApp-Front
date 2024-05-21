@@ -22,7 +22,7 @@ export function UserDetails() {
   const [loading, setLoading] = useState(true);
 
   const getUser = async (id) => {
-    console.log("aloha");
+    
     try {
       const response = await fetch(`${API_URL}users/${id}`, {
         method: "GET",
@@ -106,21 +106,19 @@ export function UserDetails() {
           </div>
           <IonActionSheet
             trigger="open-action-sheet-add"
-            header="¿Quieres añadir el contacto a tu círculo?"
-            cssClass="custom-action-sheet" // Aplicar la clase CSS personalizada
+            className="custom-action-sheet"
+            header={"¿Quieres añadir a " + user.profile.name + " a tu círculo?"}
             buttons={[
               {
-                text: "Añadir al Círculo de Confianza",
+                text: "Añadir a Círculo de Confianza",
                 role: "destructive",
-                cssClass: "action-sheet-button all",
                 data: {
                   action: "delete",
                 },
               },
               {
-                text: "Añadir al Círculo de Máxima Confianza",
+                text: "Añadir a Círculo de Máxima Confianza",
                 role: "destructive",
-                cssClass: "action-sheet-button",
                 data: {
                   action: "delete",
                 },
@@ -128,7 +126,6 @@ export function UserDetails() {
               {
                 text: "Cancelar",
                 role: "cancel",
-                cssClass: "action-sheet-cancel",
                 data: {
                   action: "cancel",
                 },
@@ -138,10 +135,11 @@ export function UserDetails() {
 
           <IonActionSheet
             trigger="open-action-sheet-block"
-            header="Actions"
+            className="custom-action-sheet"
+            header={"¿Quieres bloquear a " + user.profile.name + " ?"}
             buttons={[
               {
-                text: "Delete",
+                text: "Bloquear",
                 role: "destructive",
                 data: {
                   action: "delete",

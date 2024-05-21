@@ -16,12 +16,16 @@ import {
 import image from "../../assets/neandermark.jpeg";
 import "./Menu.css";
 import {
+  compassOutline,
+  compassSharp,
   heartOutline,
   heartSharp,
   mailOutline,
   mailSharp,
   paperPlaneOutline,
   paperPlaneSharp,
+  personOutline,
+  personSharp,
 } from "ionicons/icons";
 
 interface MenuProps {
@@ -29,12 +33,20 @@ interface MenuProps {
 }
 export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
   const router = useIonRouter();
+  const user = JSON.parse(localStorage.getItem("user") || "");
+  const profile = JSON.parse(localStorage.getItem("profile") || "");
   const appPages= [
     {
-      title: "Profile",
+      title: "Mi perfil",
       url: "/profile",
-      iosIcon: mailOutline,
-      mdIcon: mailSharp,
+      iosIcon: personOutline,
+      mdIcon: personSharp,
+    },
+    {
+      title: "Explorar",
+      url: "/explore",
+      iosIcon: compassOutline,
+      mdIcon: compassSharp,
     },
     {
       title: "Outbox",
@@ -87,8 +99,8 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       <IonMenu contentId="main" type="overlay">
         <IonContent>
           <IonList id="inbox-list">
-            <IonListHeader>Inbox</IonListHeader>
-            <IonNote>hi@ionicframework.com</IonNote>
+            <IonListHeader><IonAvatar></IonAvatar>{profile.name}</IonListHeader>
+            <IonNote>{user.email}</IonNote>
             {appPages.map((appPage, index) => {
               return (
                 <a href={appPage.url}>

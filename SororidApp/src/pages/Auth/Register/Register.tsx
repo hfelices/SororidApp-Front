@@ -7,6 +7,7 @@ import {
   IonPage,
   IonSpinner,
   IonAvatar,
+  useIonRouter,
 } from "@ionic/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -16,6 +17,7 @@ import { API_URL } from "../../../constants";
 import "../Auth.css";
 
 export function Register() {
+  const router = useIonRouter();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -57,6 +59,10 @@ export function Register() {
       }
     },
   });
+
+  const handleGoToLogin = () => {
+    router.push("/login");
+  };
 
   return (
     <>
@@ -127,6 +133,9 @@ export function Register() {
               {formik.isSubmitting ? <IonSpinner name="crescent" /> : "Crear"}
             </IonButton>
           </form>
+          <IonButton expand="block" onClick={handleGoToLogin}>
+            Ir a Login
+          </IonButton>
         </IonContent>
       </IonPage>
     </>

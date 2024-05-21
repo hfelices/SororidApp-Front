@@ -14,19 +14,23 @@
 }
 
 .profile_info_row {
-
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 
     span {
         text-align: left;
         font-size: small;
     }
 
-
 }
 
 .profile_selector_text{
-    margin-left: 65%;
+
+    display: block;
+    width: auto;
+    margin-left: 47% ; /* Alinea el elemento hacia la derecha */
+ 
 }
 .profile_text {
     text-align: right;
