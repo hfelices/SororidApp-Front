@@ -95,7 +95,7 @@ export function Explore() {
                   alt="avatar"
                 />
               </IonAvatar>
-              <IonLabel className="text-center">{user.profile.name}</IonLabel>
+              <IonLabel className="text-center fw-bold" color="sororidark">{user.profile.name}</IonLabel>
             </IonItem>
           </Link>
           

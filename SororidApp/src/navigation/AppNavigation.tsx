@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Layout } from "../components";
 import { Redirect, Route } from "react-router";
 import Page from "../pages/Page";
-import { Login, Register, Profile } from "../pages";
+import { Login, Register, Profile, Circle } from "../pages";
 import { Explore } from "../pages/Users/Explore";
 import { UserDetails } from "../pages/Users/UserDetails";
 
@@ -87,6 +87,17 @@ export function AppNavigation() {
         {isAuthenticated ? (
           <>
             <Profile />
+          </>
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
+      <Route path="/circle" exact={true}>
+        {isAuthenticated ? (
+          <>
+            <Layout doLogout={doLogout}>
+              <Circle />
+            </Layout>
           </>
         ) : (
           <Redirect to="/login" />

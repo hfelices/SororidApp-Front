@@ -11,6 +11,7 @@ import {
   IonMenuButton,
   IonMenuToggle,
   IonNote,
+  IonText,
   useIonRouter,
 } from "@ionic/react";
 import image from "../../assets/neandermark.jpeg";
@@ -18,6 +19,8 @@ import "./Menu.css";
 import {
   compassOutline,
   compassSharp,
+  ellipseOutline,
+  ellipseSharp,
   heartOutline,
   heartSharp,
   mailOutline,
@@ -27,7 +30,8 @@ import {
   personOutline,
   personSharp,
 } from "ionicons/icons";
-
+import { URL } from "../../constants";
+import defaultAvatar from "../../assets/default-avatar.jpg";
 interface MenuProps {
   doLogout: () => void; // Definimos la prop doLogout como una función que no recibe argumentos y no devuelve nada
 }
@@ -35,12 +39,19 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
   const router = useIonRouter();
   const user = JSON.parse(localStorage.getItem("user") || "");
   const profile = JSON.parse(localStorage.getItem("profile") || "");
+  const userImage = URL + profile.profile_img_path
   const appPages= [
     {
-      title: "Mi perfil",
+      title: "Mi Perfil",
       url: "/profile",
       iosIcon: personOutline,
-      mdIcon: personSharp,
+      mdIcon: personOutline,
+    },
+    {
+      title: "Mi Círculo",
+      url: "/circle",
+      iosIcon: ellipseOutline,
+      mdIcon: ellipseOutline,
     },
     {
       title: "Explorar",
@@ -48,18 +59,7 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       iosIcon: compassOutline,
       mdIcon: compassSharp,
     },
-    {
-      title: "Outbox",
-      url: "/folder/Outbox",
-      iosIcon: paperPlaneOutline,
-      mdIcon: paperPlaneSharp,
-    },
-    {
-      title: "Favorites",
-      url: "/folder/Favorites",
-      iosIcon: heartOutline,
-      mdIcon: heartSharp,
-    },
+    
   ];
   const logout = async () => {
     try {
@@ -100,7 +100,7 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
         <IonContent>
           <IonList id="inbox-list">
             <IonListHeader><IonAvatar></IonAvatar>{profile.name}</IonListHeader>
-            <IonNote>{user.email}</IonNote>
+            <IonText color="sororidark" className="ion-padding">{user.email}</IonText>
             {appPages.map((appPage, index) => {
               return (
                 <a href={appPage.url}>
@@ -109,6 +109,7 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
                       <IonIcon
                         aria-hidden="true"
                         slot="start"
+                        color="sororidark"
                         ios={appPage.iosIcon}
                         md={appPage.mdIcon}
                       />
@@ -136,7 +137,7 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       <IonButtons slot="start" className="ion-padding layout_menu_buttons">
         <IonMenuButton className="layout_menu_button">
           <IonAvatar className="layout_menu_button">
-            <img src={image} alt="" />
+            <img src={profile.profile_img_path ? userImage : defaultAvatar} alt="" />
           </IonAvatar>
         </IonMenuButton>
       </IonButtons>
