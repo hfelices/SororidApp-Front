@@ -86,7 +86,9 @@ export function AppNavigation() {
       <Route path="/profile" exact={true}>
         {isAuthenticated ? (
           <>
-            <Profile />
+            <Layout doLogout={doLogout}>
+              <Profile />
+            </Layout>
           </>
         ) : (
           <Redirect to="/login" />

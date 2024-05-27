@@ -3,7 +3,7 @@ import "./Layout.css";
 
 import { Menu } from "../Menu";
 
-import { FooterComponent } from "./Footer";
+
 export const Layout = ({ children, doLogout }) =>  {
   
   return (
@@ -12,7 +12,7 @@ export const Layout = ({ children, doLogout }) =>  {
       <div id="main">
         {children}
       </div>
-     <FooterComponent/>
+    
     </>
   );
 }

@@ -19,6 +19,8 @@ import {
 } from "ionicons/icons";
 export function Circle() {
   const [contacts, setContacts] = useState([]);
+  const [allContacts, setAllContacts] = useState([]);
+  const [extendedContacts, setExtendedContacts] = useState([]);
   const [openSections, setOpenSections] = useState([
     false,
     false,
@@ -71,17 +73,52 @@ export function Circle() {
     }
   };
 
+  const getExtendedContacts = async (contacts) => {
+    try {
+      const response = await fetch(`${API_URL}relations/${user.id}/extended`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      const responseData = await response.json();
+      if (responseData.success) {
+       
+
+        setExtendedContacts(responseData.data);
+      } else {
+        console.error("Error! Mensaje:", responseData);
+      }
+    } catch (error) {
+      console.error("Error al realizar la solicitud:", error);
+    }
+  };
+
   useEffect(() => {
-    getContacts();
-  }, []);
+    
+    if (allContacts.length < contacts.length + extendedContacts.length || allContacts.length == 0) {
+      setAllContacts(contacts.concat(extendedContacts))
+      getContacts();
+      getExtendedContacts(contacts);
+      console.log(contacts);
+      console.log(extendedContacts);
+      
+    }
+   
+    
+    
+    
+  }, [contacts, extendedContacts]);
 
   return (
     <IonContent>
       {[
-        "Círculo de Máxima Confianza",
-        "Círculo de Confianza",
-        "Círculo de Confianza Extendida",
-        "Bloqueados",
+        "Círculo de Máxima Confianza", // index 0
+        "Círculo de Confianza", // index 1
+        "Círculo de Confianza Extendida", // index 2
+        "Bloqueados", // index 3
       ].map((title, index) => (
         <div key={index}>
           <IonItem
@@ -105,9 +142,13 @@ export function Circle() {
             }}
           >
             <IonList className="py-1">
-              {contacts.length > 0 ? (
-                contacts.map((contact, idx) =>
-                  contact.name ? (
+              {allContacts.length > 0 ? (
+                allContacts.map((contact, idx) =>
+                  contact.name &&
+                  ((index === 0 && contact.relation_type === "second") ||
+                    (index === 1 && contact.relation_type === "first") ||
+                    (index === 2 && contact.relation_type === "extended") ||
+                    (index === 3 && contact.relation_type === "blocked")) ? (
                     <Link
                       to={`/user-details/${contact.id}`}
                       key={contact.id}
@@ -135,9 +176,6 @@ export function Circle() {
                 )
               ) : (
                 <IonItem>
-                  {/* <Link to={`/explore`} style={{ textDecoration: "none" }}>
-                    <IonIcon color="sororidark" icon={compassOutline} />
-                  </Link> */}
                   <IonLabel
                     className="fw-bold text-center"
                     color={index === 3 ? "danger" : "sororidark"}

@@ -20,9 +20,6 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import { cameraOutline } from "ionicons/icons";
-import { FooterComponent, Menu } from "../../../components";
-import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
-import { Filesystem, ReadFileResult } from "@capacitor/filesystem";
 import * as Yup from "yup";
 import { API_URL, URL } from "../../../constants";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
@@ -135,10 +132,6 @@ export function Profile() {
   async function canDismiss(data?: any, role?: string) {
     return role !== "gesture";
   }
-
-  const handleGoToExplore = () => {
-    router.push("/explore");
-  };
   const handleIconClick = () => {
     // Desencadenar el clic en el input de tipo file
     fileInputRef.current.click();
@@ -146,7 +139,7 @@ export function Profile() {
   return (
     <>
       <IonPage>
-        <IonHeader className="profile_header ion-padding">
+        <IonHeader className="profile_header">
           <div className="d-flex justify-content-center align-items-center">
             <img
               className="large-avatar"
@@ -259,11 +252,8 @@ export function Profile() {
               {formik.isSubmitting ? "Enviando..." : "Actualizar"}
             </IonButton>
           </form>
-          <IonButton expand="block" onClick={handleGoToExplore}>
-            Ir a Explorar
-          </IonButton>
         </IonContent>
-        <FooterComponent />
+        
       </IonPage>
     </>
   );
