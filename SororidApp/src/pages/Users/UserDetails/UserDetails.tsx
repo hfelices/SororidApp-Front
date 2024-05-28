@@ -71,8 +71,77 @@ export function UserDetails() {
       return {};
     }
   };
-  const aloha = () => {
-    console.log("aloha");
+  const relationHandler = async (type) => {
+    try {
+      const typesCreate = ["first", "second", "blocked"];
+      const typesModify = ["go_first", "go_second", "go_blocked"];
+      const typesDelete = ["delete", "unblock"];
+      console.log(user);
+      if (typesCreate.includes(type)) {
+        const response = await fetch(`${API_URL}relations`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({
+            user_1: currentUser.id,
+            user_2: user.user.id,
+            type: type,
+            status: type == "blocked" ? "active": "pending",
+          }),
+        });
+        const responseData = await response.json();
+        if (responseData.success === true) {
+          setRelation(responseData.data);
+        } else {
+          console.log("Error! Mensaje:", responseData);
+          return {};
+        }
+      } else if (typesModify.includes(type)) {
+        const response = await fetch(`${API_URL}relations/${relation.id}`, {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({
+            type: type,
+          }),
+        });
+        const responseData = await response.json();
+        if (responseData.success === true) {
+          setRelation(responseData.data);
+        } else {
+          console.log("Error! Mensaje:", responseData);
+          return {};
+        }
+      }else if (typesDelete.includes(type)) {
+        const response = await fetch(`${API_URL}relations/${relation.id}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        const responseData = await response.json();
+        if (responseData.success === true) {
+          setRelation(undefined);
+        } else {
+          console.log("Error! Mensaje:", responseData);
+          return {};
+        }
+      }  else {
+        console.log("invalid type"+ type)
+      }
+
+    } catch (error) {
+      console.error("Error al realizar la solicitud:", error);
+      return {};
+    }
   };
   
   useEffect(() => {
@@ -140,7 +209,7 @@ export function UserDetails() {
                             action: "unblock",
                           },
                           handler: () => {
-                            aloha();
+                            relationHandler("unblock");
                            
                           },
                         },
@@ -198,7 +267,7 @@ export function UserDetails() {
                             action: "delete",
                           },
                           handler: () => {
-                            aloha();
+                            relationHandler("delete");
                            
                           },
                         },
@@ -223,7 +292,7 @@ export function UserDetails() {
                             action: "block",
                           },
                           handler: () => {
-                            aloha();
+                            relationHandler("go_blocked");
                            
                           },
                         },
@@ -250,10 +319,10 @@ export function UserDetails() {
                             text: "Añadir",
                             role: "destructive",
                             data: {
-                              action: "add",
+                              action: "second",
                             },
                             handler: () => {
-                              aloha();
+                              relationHandler("go_second");
                              
                             },
                           },
@@ -280,10 +349,10 @@ export function UserDetails() {
                             text: "Mover",
                             role: "destructive",
                             data: {
-                              action: "add",
+                              action: "first",
                             },
                             handler: () => {
-                              aloha();
+                              relationHandler("go_first");
                              
                             },
                           },
@@ -325,7 +394,7 @@ export function UserDetails() {
                           action: "add",
                         },
                         handler: () => {
-                          aloha();
+                          relationHandler("first");
                          
                         },
                       },
@@ -336,7 +405,7 @@ export function UserDetails() {
                           action: "add",
                         },
                         handler: () => {
-                          aloha();
+                          relationHandler("second");
                          
                         },
                       },
@@ -370,7 +439,7 @@ export function UserDetails() {
                           action: "block",
                         },
                         handler: () => {
-                          aloha();
+                          relationHandler("blocked");
                          
                         },
                       },
