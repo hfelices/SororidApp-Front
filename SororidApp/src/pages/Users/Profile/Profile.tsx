@@ -37,10 +37,9 @@ export function Profile() {
   );
   const [load, setLoad] = useState(false);
   const [userImage, setUserImage] = useState(URL + profile.profile_img_path);
+ 
 
   useEffect(() => {
-    console.log(userImage);
-
     setLoad(true);
   }, [user]);
 
@@ -115,6 +114,7 @@ export function Profile() {
         if (responseData.success) {
           console.log("Imagen subida con éxito:", responseData);
           localStorage.setItem("profile", JSON.stringify(responseData.data));
+         
           setUserImage(URL + responseData.data.profile_img_path);
         } else {
           console.error("Error al subir imagen:", responseData.message);
@@ -253,7 +253,6 @@ export function Profile() {
             </IonButton>
           </form>
         </IonContent>
-        
       </IonPage>
     </>
   );

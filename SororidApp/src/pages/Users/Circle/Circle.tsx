@@ -102,9 +102,6 @@ export function Circle() {
       setAllContacts(contacts.concat(extendedContacts))
       getContacts();
       getExtendedContacts(contacts);
-      console.log(contacts);
-      console.log(extendedContacts);
-      
     }
    
     

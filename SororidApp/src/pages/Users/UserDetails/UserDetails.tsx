@@ -71,11 +71,14 @@ export function UserDetails() {
       return {};
     }
   };
-
+  const aloha = () => {
+    console.log("aloha");
+  };
+  
   useEffect(() => {
     getRelation(id);
     getUser(id);
-    console.log(relation);
+    
   }, []);
 
   return (
@@ -134,7 +137,11 @@ export function UserDetails() {
                           text: "Desbloquear",
                           role: "destructive",
                           data: {
-                            action: "delete",
+                            action: "unblock",
+                          },
+                          handler: () => {
+                            aloha();
+                           
                           },
                         },
                         {
@@ -167,62 +174,69 @@ export function UserDetails() {
                       Eliminar Contacto
                     </IonButton>
                     <IonButton
-                    id="open-action-sheet-block"
-                    expand="block"
-                    shape="round"
-                    fill="outline"
-                    className="mt-3"
-                  >
-                    Bloquear
-                  </IonButton>
-                  <IonActionSheet
-                    trigger="open-action-sheet-del"
-                    className="custom-action-sheet"
-                    header={
-                      "¿Quieres Eliminar a " +
-                      user.profile.name +
-                      " de tu Círculo?"
-                    }
-                    buttons={[
-                      {
-                        text: "Eliminar",
-                        role: "destructive",
-                        data: {
-                          action: "delete",
+                      id="open-action-sheet-block"
+                      expand="block"
+                      shape="round"
+                      fill="outline"
+                      className="mt-3"
+                    >
+                      Bloquear
+                    </IonButton>
+                    <IonActionSheet
+                      trigger="open-action-sheet-del"
+                      className="custom-action-sheet"
+                      header={
+                        "¿Quieres Eliminar a " +
+                        user.profile.name +
+                        " de tu Círculo?"
+                      }
+                      buttons={[
+                        {
+                          text: "Eliminar",
+                          role: "destructive",
+                          data: {
+                            action: "delete",
+                          },
+                          handler: () => {
+                            aloha();
+                           
+                          },
                         },
-                      },
-                      {
-                        text: "Cancelar",
-                        role: "cancel",
-                        data: {
-                          action: "cancel",
+                        {
+                          text: "Cancelar",
+                          role: "cancel",
+                          data: {
+                            action: "cancel",
+                          },
                         },
-                      },
-                    ]}
-                  />
-                  <IonActionSheet
-                    trigger="open-action-sheet-block"
-                    className="custom-action-sheet"
-                    header={"¿Quieres bloquear a " + user.profile.name + " ?"}
-                    buttons={[
-                      {
-                        text: "Bloquear",
-                        role: "destructive",
-                        data: {
-                          action: "delete",
+                      ]}
+                    />
+                    <IonActionSheet
+                      trigger="open-action-sheet-block"
+                      className="custom-action-sheet"
+                      header={"¿Quieres bloquear a " + user.profile.name + " ?"}
+                      buttons={[
+                        {
+                          text: "Bloquear",
+                          role: "destructive",
+                          data: {
+                            action: "block",
+                          },
+                          handler: () => {
+                            aloha();
+                           
+                          },
                         },
-                      },
-                      {
-                        text: "Cancelar",
-                        role: "cancel",
-                        data: {
-                          action: "cancel",
+                        {
+                          text: "Cancelar",
+                          role: "cancel",
+                          data: {
+                            action: "cancel",
+                          },
                         },
-                      },
-                    ]}
-                  />
+                      ]}
+                    />
                     {relation.relation_type === "first" ? (
-
                       <IonActionSheet
                         trigger="open-action-sheet-mod"
                         className="custom-action-sheet"
@@ -236,7 +250,11 @@ export function UserDetails() {
                             text: "Añadir",
                             role: "destructive",
                             data: {
-                              action: "delete",
+                              action: "add",
+                            },
+                            handler: () => {
+                              aloha();
+                             
                             },
                           },
                           {
@@ -262,7 +280,11 @@ export function UserDetails() {
                             text: "Mover",
                             role: "destructive",
                             data: {
-                              action: "delete",
+                              action: "add",
+                            },
+                            handler: () => {
+                              aloha();
+                             
                             },
                           },
                           {
@@ -300,14 +322,22 @@ export function UserDetails() {
                         text: "Añadir a Círculo de Confianza",
                         role: "destructive",
                         data: {
-                          action: "delete",
+                          action: "add",
+                        },
+                        handler: () => {
+                          aloha();
+                         
                         },
                       },
                       {
                         text: "Añadir a Círculo de Máxima Confianza",
                         role: "destructive",
                         data: {
-                          action: "delete",
+                          action: "add",
+                        },
+                        handler: () => {
+                          aloha();
+                         
                         },
                       },
                       {
@@ -337,7 +367,11 @@ export function UserDetails() {
                         text: "Bloquear",
                         role: "destructive",
                         data: {
-                          action: "delete",
+                          action: "block",
+                        },
+                        handler: () => {
+                          aloha();
+                         
                         },
                       },
                       {
@@ -349,8 +383,6 @@ export function UserDetails() {
                       },
                     ]}
                   />
-
-                  
                 </>
               )}
             </div>

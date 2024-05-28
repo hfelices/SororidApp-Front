@@ -30,7 +30,7 @@ import {
   personOutline,
   personSharp,
 } from "ionicons/icons";
-import { URL } from "../../constants";
+import { API_URL, URL } from "../../constants";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 interface MenuProps {
   doLogout: () => void; // Definimos la prop doLogout como una función que no recibe argumentos y no devuelve nada
@@ -39,8 +39,8 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
   const router = useIonRouter();
   const user = JSON.parse(localStorage.getItem("user") || "");
   const profile = JSON.parse(localStorage.getItem("profile") || "");
-  const userImage = URL + profile.profile_img_path
-  const appPages= [
+  const userImage = URL + profile.profile_img_path;
+  const appPages = [
     {
       title: "Mi Perfil",
       url: "/profile",
@@ -59,48 +59,64 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       iosIcon: compassOutline,
       mdIcon: compassSharp,
     },
-    
   ];
   const logout = async () => {
     try {
       const authToken = JSON.parse(localStorage.getItem("authToken") || "");
-      const response = await fetch('http://localhost:8000/api/logout', {
-        method: 'POST',
+      const response = await fetch(API_URL + "logout", {
+        method: "POST",
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
         },
-
       });
       const responseData = await response.json();
       if (responseData.success === true) {
-        console.log('OK! Mensaje:', responseData);
+        console.log("OK! Mensaje:", responseData);
         localStorage.removeItem("authToken");
         localStorage.removeItem("user");
         localStorage.removeItem("profile");
         localStorage.removeItem("town");
         doLogout();
-        router.push('/login');
-        
-    } else {
-      console.log('Error! Mensaje:', responseData);
-    }
-
+        router.push("/login");
+      } else {
+        console.log("Error! Mensaje:", responseData);
+      }
     } catch (error) {
-      console.error('Error al realizar la solicitud:', error);
-  }    
-} 
-  
-
+      console.error("Error al realizar la solicitud:", error);
+    }
+  };
 
   return (
     <>
       <IonMenu contentId="main" type="overlay">
         <IonContent>
           <IonList id="inbox-list">
-            <IonListHeader><IonAvatar></IonAvatar>{profile.name}</IonListHeader>
-            <IonText color="sororidark" className="ion-padding">{user.email}</IonText>
+            <IonListHeader>
+              <IonAvatar>
+                {" "}
+                <img
+                  src={profile.profile_img_path ? userImage : defaultAvatar}
+                  alt=""
+                />{" "}
+              </IonAvatar>
+
+              <IonText
+                color="sororidark"
+                className="mx-1"
+                style={{ fontSize: "18px" }}
+              >
+                {profile.name}
+              </IonText>
+            </IonListHeader>
+            <IonText
+              color="sororidark"
+              className="ion-padding mx-2"
+              style={{ fontSize: "12px" }}
+            >
+              {user.email}
+            </IonText>
             {appPages.map((appPage, index) => {
               return (
                 <a href={appPage.url}>
@@ -137,10 +153,13 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       <IonButtons slot="start" className="ion-padding layout_menu_buttons">
         <IonMenuButton className="layout_menu_button">
           <IonAvatar className="layout_menu_button">
-            <img src={profile.profile_img_path ? userImage : defaultAvatar} alt="" />
+            <img
+              src={profile.profile_img_path ? userImage : defaultAvatar}
+              alt=""
+            />
           </IonAvatar>
         </IonMenuButton>
       </IonButtons>
     </>
   );
-}
+};
