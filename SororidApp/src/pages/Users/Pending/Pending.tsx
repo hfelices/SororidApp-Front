@@ -47,7 +47,53 @@ export function Pending() {
       return [];
     }
   };
+  const relationHandler = async (action, id, type) => {
+    try {
+      if (action == "accept") {
+        const response = await fetch(`${API_URL}relations/${id}`, {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({
+            status:  "active",
+            type: type,
+          }),
+        });
+        const responseData = await response.json();
+        if (responseData.success === true) {
+          console.log("patata")
+        } else {
+          console.log("Error! Mensaje:", responseData);
+          return {};
+        }
+      } else if (action == "reject") {
+        const response = await fetch(`${API_URL}relations/${id}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        const responseData = await response.json();
+        if (responseData.success === true) {
+          console.log("patata destruida")
+        } else {
+          console.log("Error! Mensaje:", responseData);
+          return {};
+        } 
+      } else {
+        console.log("invalid type"+ type)
+      }
 
+    } catch (error) {
+      console.error("Error al realizar la solicitud:", error);
+      return {};
+    }
+  };
   useEffect(() => {
     getPendingRelations();
   }, []);
@@ -95,7 +141,7 @@ export function Pending() {
                         action: "delete",
                       },
                       handler: () => {
-                        console.log("aloha");
+                        relationHandler("accept", relation.relation.id, relation.relation.type)
                       },
                     },
                     {
@@ -105,7 +151,7 @@ export function Pending() {
                         action: "delete",
                       },
                       handler: () => {
-                        console.log("aloha");
+                        relationHandler("reject", relation.relation.id, relation.relation.type)
                       },
                     },
                     {
