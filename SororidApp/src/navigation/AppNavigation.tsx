@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Layout } from "../components";
 import { Redirect, Route } from "react-router";
 import Page from "../pages/Page";
-import { Login, Register, Profile, Circle } from "../pages";
+import { Login, Register, Profile, Circle, Pending } from "../pages";
 import { Explore } from "../pages/Users/Explore";
 import { UserDetails } from "../pages/Users/UserDetails";
 
@@ -88,6 +88,17 @@ export function AppNavigation() {
           <>
             <Layout doLogout={doLogout}>
               <Profile />
+            </Layout>
+          </>
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
+      <Route path="/pending" exact={true}>
+        {isAuthenticated ? (
+          <>
+            <Layout doLogout={doLogout}>
+              <Pending />
             </Layout>
           </>
         ) : (

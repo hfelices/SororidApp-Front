@@ -119,3 +119,11 @@ ion-item.selected {
   height: 60px;
   width: 70px;
 }
+
+.pending-chip{
+  /* background-color: #9984b8; */
+   background-color: #85267c; 
+  font-weight: bold;
+  padding: 0.5 0.5em 0.5 0.5em ;
+  color: white;
+}

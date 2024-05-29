@@ -1,6 +1,8 @@
 import {
   IonAvatar,
+  IonBadge,
   IonButtons,
+  IonChip,
   IonContent,
   IonIcon,
   IonItem,
@@ -21,24 +23,31 @@ import {
   compassSharp,
   ellipseOutline,
   ellipseSharp,
+  exitOutline,
+  exitSharp,
   heartOutline,
   heartSharp,
   mailOutline,
   mailSharp,
   paperPlaneOutline,
   paperPlaneSharp,
+  peopleOutline,
+  peopleSharp,
   personOutline,
   personSharp,
 } from "ionicons/icons";
 import { API_URL, URL } from "../../constants";
 import defaultAvatar from "../../assets/default-avatar.jpg";
+import { useEffect, useState } from "react";
 interface MenuProps {
   doLogout: () => void; // Definimos la prop doLogout como una función que no recibe argumentos y no devuelve nada
 }
 export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
   const router = useIonRouter();
+  const authToken = JSON.parse(localStorage.getItem("authToken") || "");
   const user = JSON.parse(localStorage.getItem("user") || "");
   const profile = JSON.parse(localStorage.getItem("profile") || "");
+  const [pending, setPending] = useState([]);
   const userImage = URL + profile.profile_img_path;
   const appPages = [
     {
@@ -59,7 +68,37 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       iosIcon: compassOutline,
       mdIcon: compassSharp,
     },
+    {
+      title: "Solicitudes",
+      url: "/pending",
+      iosIcon: peopleOutline,
+      mdIcon: peopleSharp,
+    },
   ];
+  const getPendingRelations = async () => {
+    try {
+      const response = await fetch(`${API_URL}relations/${user.id}/pending`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      const responseData = await response.json();
+      if (responseData.success === true) {
+        console.log(responseData);
+
+        setPending(responseData.data);
+      } else {
+        console.log("Error! Mensaje:", responseData);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error al realizar la solicitud:", error);
+      return [];
+    }
+  };
   const logout = async () => {
     try {
       const authToken = JSON.parse(localStorage.getItem("authToken") || "");
@@ -87,6 +126,9 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       console.error("Error al realizar la solicitud:", error);
     }
   };
+  useEffect(() => {
+    getPendingRelations();
+  }, []);
 
   return (
     <>
@@ -119,9 +161,9 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
             </IonText>
             {appPages.map((appPage, index) => {
               return (
-                <a href={appPage.url}>
+                <a href={appPage.url} className="text-decoration-none">
                   <IonMenuToggle key={index} autoHide={false}>
-                    <IonItem>
+                    <IonItem  >
                       <IonIcon
                         aria-hidden="true"
                         slot="start"
@@ -129,7 +171,20 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
                         ios={appPage.iosIcon}
                         md={appPage.mdIcon}
                       />
-                      <IonLabel>{appPage.title}</IonLabel>
+                      {index == 3 ? (
+                        <IonChip className="pending-chip" slot="end" >{pending.length}</IonChip>
+                        // <IonBadge slot="end" color="sororidark" className="p-2">
+                        //   <IonText
+                           
+                        //     color={"light"}
+                        //   >
+                            
+                        //   </IonText>
+                        // </IonBadge>
+                      ) : (
+                        <></>
+                      )}
+                      <IonLabel color={"sororidark"}>{appPage.title}</IonLabel>
                     </IonItem>
                   </IonMenuToggle>
                 </a>
@@ -140,10 +195,11 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
                 <IonIcon
                   aria-hidden="true"
                   slot="start"
-                  ios={heartOutline}
-                  md={heartSharp}
+                  ios={exitOutline}
+                  md={exitSharp}
+                  color="danger"
                 />
-                <IonLabel>Logout</IonLabel>
+                <IonLabel className="text-danger">Logout</IonLabel>
               </IonItem>
             </IonMenuToggle>
           </IonList>
