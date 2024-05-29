@@ -21,6 +21,7 @@ export function Pending() {
   const user = JSON.parse(localStorage.getItem("user") || "");
   const [relations, setRelations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [change, setChange] = useState(false);
 
   const getPendingRelations = async () => {
     try {
@@ -40,7 +41,7 @@ export function Pending() {
         setLoading(false);
       } else {
         console.log("Error! Mensaje:", responseData);
-        return [];
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
@@ -58,13 +59,13 @@ export function Pending() {
             Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify({
-            status:  "active",
+            status: "active",
             type: type,
           }),
         });
         const responseData = await response.json();
         if (responseData.success === true) {
-          console.log("patata")
+            getPendingRelations();
         } else {
           console.log("Error! Mensaje:", responseData);
           return {};
@@ -80,15 +81,15 @@ export function Pending() {
         });
         const responseData = await response.json();
         if (responseData.success === true) {
-          console.log("patata destruida")
+          console.log("patata destruida");
+          getPendingRelations();
         } else {
           console.log("Error! Mensaje:", responseData);
           return {};
-        } 
+        }
       } else {
-        console.log("invalid type"+ type)
+        console.log("invalid type" + type);
       }
-
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
       return {};
@@ -110,7 +111,7 @@ export function Pending() {
         <IonList className="ion-padding">
           {relations.length > 0 ? (
             relations.map((relation, idx) => (
-              <IonItem className="text-center" id="open-action-sheet-handle">
+              <IonItem className="text-center" id={`open-action-sheet-${idx}`}>
                 <IonAvatar className="mx-2" slot="start">
                   <img
                     src={
@@ -126,7 +127,7 @@ export function Pending() {
                 </IonLabel>
 
                 <IonActionSheet
-                  trigger="open-action-sheet-handle"
+                  trigger={`open-action-sheet-${idx}`}
                   className="custom-action-sheet"
                   header={
                     "¿Quieres aceptar la solicitud de " +
@@ -141,7 +142,11 @@ export function Pending() {
                         action: "delete",
                       },
                       handler: () => {
-                        relationHandler("accept", relation.relation.id, relation.relation.type)
+                        relationHandler(
+                          "accept",
+                          relation.relation.id,
+                          relation.relation.type
+                        );
                       },
                     },
                     {
@@ -151,7 +156,11 @@ export function Pending() {
                         action: "delete",
                       },
                       handler: () => {
-                        relationHandler("reject", relation.relation.id, relation.relation.type)
+                        relationHandler(
+                          "reject",
+                          relation.relation.id,
+                          relation.relation.type
+                        );
                       },
                     },
                     {

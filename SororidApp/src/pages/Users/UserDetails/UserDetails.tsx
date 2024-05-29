@@ -62,6 +62,7 @@ export function UserDetails() {
       const responseData = await response.json();
       if (responseData.success === true) {
         setRelation(responseData.data.find((elemento) => elemento.id == id));
+        console.log(responseData.data)
       } else {
         console.log("Error! Mensaje:", responseData);
         return {};
