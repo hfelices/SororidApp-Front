@@ -8,6 +8,7 @@ import {
   IonSpinner,
   IonAvatar,
   useIonRouter,
+  useIonToast,
 } from "@ionic/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -18,6 +19,16 @@ import "../Auth.css";
 
 export function Register() {
   const router = useIonRouter();
+  const [present] = useIonToast();
+
+  const presentToast = (message, myclass) => {
+    present({
+      message: message,
+      duration: 1500,
+      position: "middle",
+      cssClass: myclass
+    });
+  };
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -51,11 +62,18 @@ export function Register() {
         const responseData = await response.json();
         if (responseData.success === true) {
           console.log("OK! Mensaje:", responseData);
+          presentToast('Registrado con éxito', 'green');
+          setTimeout(() => {
+            router.push("/login");
+            
+          }, 1500);
         } else {
           console.log("Error! Mensaje:", responseData);
+          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
         }
       } catch (error) {
         console.error("Error al realizar la solicitud:", error);
+        presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
       }
     },
   });

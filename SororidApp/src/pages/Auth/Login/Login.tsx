@@ -8,6 +8,7 @@ import {
   IonSpinner,
   IonAvatar,
   useIonRouter,
+  useIonToast,
 } from "@ionic/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -22,6 +23,16 @@ interface LoginProps {
 }
 export const Login: React.FC<LoginProps> = ({ doLogin }) => {
   const router = useIonRouter();
+  const [present] = useIonToast();
+
+  const presentToast = (message, myclass) => {
+    present({
+      message: message,
+      duration: 1500,
+      position: "middle",
+      cssClass: myclass
+    });
+  };
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -59,12 +70,15 @@ export const Login: React.FC<LoginProps> = ({ doLogin }) => {
           localStorage.setItem("profile", JSON.stringify(responseData.profile));
           localStorage.setItem("town", JSON.stringify(responseData.town));
           doLogin();
-          router.push("/profile");
+          presentToast('Autenticado con éxito', 'green');
+          router.push("/profile");        
         } else {
           console.log("Error! Mensaje:", responseData);
+          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
         }
       } catch (error) {
         console.error("Error al realizar la solicitud:", error);
+        presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
       }
     },
   });

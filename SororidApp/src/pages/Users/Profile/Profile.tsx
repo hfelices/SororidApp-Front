@@ -18,6 +18,7 @@ import {
   IonSelect,
   IonSelectOption,
   useIonRouter,
+  useIonToast,
 } from "@ionic/react";
 import { cameraOutline } from "ionicons/icons";
 import * as Yup from "yup";
@@ -37,7 +38,16 @@ export function Profile() {
   );
   const [load, setLoad] = useState(false);
   const [userImage, setUserImage] = useState(URL + profile.profile_img_path);
- 
+  const [present] = useIonToast();
+
+  const presentToast = (message, myclass) => {
+    present({
+      message: message,
+      duration: 1500,
+      position: "middle",
+      cssClass: myclass
+    });
+  };
 
   useEffect(() => {
     setLoad(true);
@@ -83,11 +93,14 @@ export function Profile() {
         if (responseData.success === true) {
           console.log("OK! Mensaje:", responseData);
           localStorage.setItem("profile", JSON.stringify(responseData.data));
+          presentToast('Perfil actualizado con éxito', 'green');
         } else {
           console.log("Error! Mensaje:", responseData);
+          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
         }
       } catch (error) {
         console.error("Error al realizar la solicitud:", error);
+        presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
       }
     },
   });
@@ -116,11 +129,14 @@ export function Profile() {
           localStorage.setItem("profile", JSON.stringify(responseData.data));
          
           setUserImage(URL + responseData.data.profile_img_path);
+          presentToast('Foto de perfil actualizada con éxito', 'green');
         } else {
           console.error("Error al subir imagen:", responseData.message);
+          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
         }
       } catch (error) {
         console.error("Error en la petición:", error);
+        presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
       }
     }
   };
@@ -128,10 +144,6 @@ export function Profile() {
   const handleSubmit = (values: any) => {
     console.log("Datos actualizados:", values);
   };
-
-  async function canDismiss(data?: any, role?: string) {
-    return role !== "gesture";
-  }
   const handleIconClick = () => {
     // Desencadenar el clic en el input de tipo file
     fileInputRef.current.click();

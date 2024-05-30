@@ -13,6 +13,7 @@ import {
   IonItem,
   IonText,
   IonToolbar,
+  useIonToast,
 } from "@ionic/react";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 export function UserDetails() {
@@ -22,7 +23,16 @@ export function UserDetails() {
   const [user, setUser] = useState({});
   const [relation, setRelation] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [present] = useIonToast();
 
+  const presentToast = (message, myclass) => {
+    present({
+      message: message,
+      duration: 1500,
+      position: "middle",
+      cssClass: myclass
+    });
+  };
   const getUser = async (id) => {
     try {
       const response = await fetch(`${API_URL}users/${id}`, {
@@ -96,8 +106,10 @@ export function UserDetails() {
         const responseData = await response.json();
         if (responseData.success === true) {
           setRelation(responseData.data);
+          presentToast('Solicitud mandada con éxito', 'green');
         } else {
           console.log("Error! Mensaje:", responseData);
+          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
           return {};
         }
       } else if (typesModify.includes(type)) {
@@ -115,8 +127,10 @@ export function UserDetails() {
         const responseData = await response.json();
         if (responseData.success === true) {
           setRelation(responseData.data);
+          presentToast('Relación modificada con éxito', 'green');
         } else {
           console.log("Error! Mensaje:", responseData);
+          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
           return {};
         }
       }else if (typesDelete.includes(type)) {
@@ -131,16 +145,20 @@ export function UserDetails() {
         const responseData = await response.json();
         if (responseData.success === true) {
           setRelation(undefined);
+          presentToast('Relacion eliminada con éxito', 'green');
         } else {
           console.log("Error! Mensaje:", responseData);
+          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
           return {};
         }
       }  else {
         console.log("invalid type"+ type)
+        presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
       }
 
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
+      presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
       return {};
     }
   };

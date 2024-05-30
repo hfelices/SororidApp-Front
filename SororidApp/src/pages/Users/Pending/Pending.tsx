@@ -47,8 +47,6 @@ export function Pending() {
       });
       const responseData = await response.json();
       if (responseData.success === true) {
-        console.log(responseData);
-
         setRelations(responseData.data);
         setLoading(false);
       } else {
@@ -78,8 +76,10 @@ export function Pending() {
         const responseData = await response.json();
         if (responseData.success === true) {
             getPendingRelations();
+            presentToast('Solicitud aceptada con éxito', 'green');
         } else {
           console.log("Error! Mensaje:", responseData);
+          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
           return {};
         }
       } else if (action == "reject") {
@@ -93,17 +93,20 @@ export function Pending() {
         });
         const responseData = await response.json();
         if (responseData.success === true) {
-          console.log("patata destruida");
           getPendingRelations();
+          presentToast('Solicitud rechazada con éxito', 'green');
         } else {
           console.log("Error! Mensaje:", responseData);
+          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
           return {};
         }
       } else {
         console.log("invalid type" + type);
+        presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
       }
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
+      presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
       return {};
     }
   };
