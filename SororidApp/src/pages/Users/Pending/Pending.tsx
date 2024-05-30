@@ -9,6 +9,7 @@ import {
   IonListHeader,
   IonSpinner,
   IonText,
+  useIonToast,
 } from "@ionic/react";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 import "./Pending.css";
@@ -22,6 +23,17 @@ export function Pending() {
   const [relations, setRelations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [change, setChange] = useState(false);
+  const [present] = useIonToast();
+
+  const presentToast = (message, myclass) => {
+    present({
+      message: message,
+      duration: 1500,
+      position: "middle",
+      cssClass: myclass
+    });
+  };
+
 
   const getPendingRelations = async () => {
     try {

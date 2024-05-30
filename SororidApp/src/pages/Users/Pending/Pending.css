@@ -49,3 +49,27 @@
     --border-width: 1px;
 
 }
+
+ion-toast.sororidad {
+    text-align: center;
+    font-weight: 900;
+    --background: rgba(153, 132, 184, 0.8);  /* Ajuste de color con opacidad */
+    --box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    --color: white;
+  }
+
+  ion-toast.green {
+    text-align: center;
+    font-weight: 900;
+    --background: rgba(8, 194, 18, 0.8);  /* Ajuste de color con opacidad */
+    --box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    --color: white;
+  }
+
+  ion-toast.red {
+    text-align: center;
+    font-weight: 900;
+    --background: rgba(243, 33, 33, 0.8);  /* Ajuste de color con opacidad */
+    --box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    --color: white;
+  }

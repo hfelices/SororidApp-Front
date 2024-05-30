@@ -101,7 +101,7 @@ export function UserDetails() {
           return {};
         }
       } else if (typesModify.includes(type)) {
-        const response = await fetch(`${API_URL}relations/${relation.relation_id.id}`, {
+        const response = await fetch(`${API_URL}relations/${relation.relation_id}`, {
           method: "PUT",
           headers: {
             Accept: "application/json",
@@ -120,7 +120,7 @@ export function UserDetails() {
           return {};
         }
       }else if (typesDelete.includes(type)) {
-        const response = await fetch(`${API_URL}relations/${relation.relation_id.id}`, {
+        const response = await fetch(`${API_URL}relations/${relation.relation_id}`, {
           method: "DELETE",
           headers: {
             Accept: "application/json",
