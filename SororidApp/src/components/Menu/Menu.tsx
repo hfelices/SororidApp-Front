@@ -27,6 +27,7 @@ import {
   exitSharp,
   heartOutline,
   heartSharp,
+  homeOutline,
   mailOutline,
   mailSharp,
   paperPlaneOutline,
@@ -50,6 +51,12 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
   const [pending, setPending] = useState([]);
   const userImage = URL + profile.profile_img_path;
   const appPages = [
+    {
+      title: "Inicio",
+      url: "/home",
+      iosIcon: homeOutline,
+      mdIcon: homeOutline,
+    },
     {
       title: "Mi Perfil",
       url: "/profile",
@@ -87,7 +94,7 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       });
       const responseData = await response.json();
       if (responseData.success === true) {
-        console.log(responseData);
+       
 
         setPending(responseData.data);
       } else {
@@ -161,8 +168,8 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
             </IonText>
             {appPages.map((appPage, index) => {
               return (
-                <a href={appPage.url} className="text-decoration-none">
-                  <IonMenuToggle key={index} autoHide={false}>
+                <a href={appPage.url}  key={index} className="text-decoration-none">
+                  <IonMenuToggle autoHide={false}>
                     <IonItem  >
                       <IonIcon
                         aria-hidden="true"
@@ -171,7 +178,7 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
                         ios={appPage.iosIcon}
                         md={appPage.mdIcon}
                       />
-                      {index == 3 ? (
+                      {index == 4 ? (
                         <IonChip className="pending-chip" slot="end" >{pending.length}</IonChip>
                         // <IonBadge slot="end" color="sororidark" className="p-2">
                         //   <IonText

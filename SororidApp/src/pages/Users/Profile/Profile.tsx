@@ -45,7 +45,7 @@ export function Profile() {
       message: message,
       duration: 1500,
       position: "middle",
-      cssClass: myclass
+      cssClass: myclass,
     });
   };
 
@@ -92,15 +92,24 @@ export function Profile() {
         const responseData = await response.json();
         if (responseData.success === true) {
           console.log("OK! Mensaje:", responseData);
-          localStorage.setItem("profile", JSON.stringify(responseData.data));
-          presentToast('Perfil actualizado con éxito', 'green');
+          localStorage.setItem("profile", JSON.stringify(responseData.profile));
+          localStorage.setItem("user", JSON.stringify(responseData.user));
+          console.log(responseData.user);
+
+          presentToast("Perfil actualizado con éxito", "green");
         } else {
           console.log("Error! Mensaje:", responseData);
-          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+          presentToast(
+            "Ha ocurrido un error, porfavor vuélvalo a intentar",
+            "red"
+          );
         }
       } catch (error) {
         console.error("Error al realizar la solicitud:", error);
-        presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+        presentToast(
+          "Ha ocurrido un error, porfavor vuélvalo a intentar",
+          "red"
+        );
       }
     },
   });
@@ -126,17 +135,24 @@ export function Profile() {
         const responseData = await response.json();
         if (responseData.success) {
           console.log("Imagen subida con éxito:", responseData);
+          
           localStorage.setItem("profile", JSON.stringify(responseData.data));
-         
+
           setUserImage(URL + responseData.data.profile_img_path);
-          presentToast('Foto de perfil actualizada con éxito', 'green');
+          presentToast("Foto de perfil actualizada con éxito", "green");
         } else {
           console.error("Error al subir imagen:", responseData.message);
-          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+          presentToast(
+            "Ha ocurrido un error, porfavor vuélvalo a intentar",
+            "red"
+          );
         }
       } catch (error) {
         console.error("Error en la petición:", error);
-        presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+        presentToast(
+          "Ha ocurrido un error, porfavor vuélvalo a intentar",
+          "red"
+        );
       }
     }
   };
@@ -174,6 +190,16 @@ export function Profile() {
           <IonItem>
             <IonText className="mt-2">{user.email}</IonText>
           </IonItem>
+          {user.made_profile ? (
+            <></>
+          ) : (
+            <IonItem>
+              <IonText className="mt-2 text-center fw-bold" color={"sororidark"}>
+                Debes rellenar todos los campos de tu perfil antes de abandonar
+                esta página
+              </IonText>
+            </IonItem>
+          )}
         </IonHeader>
         <IonContent className="ion-padding">
           <form onSubmit={formik.handleSubmit}>

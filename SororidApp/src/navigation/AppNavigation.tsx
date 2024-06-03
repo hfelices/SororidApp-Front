@@ -6,19 +6,25 @@ import Page from "../pages/Page";
 import { Login, Register, Profile, Circle, Pending } from "../pages";
 import { Explore } from "../pages/Users/Explore";
 import { UserDetails } from "../pages/Users/UserDetails";
-
-const authTokenString = localStorage.getItem("authToken");
-const authToken = authTokenString ? JSON.parse(authTokenString) : {};
+import { Home } from "../pages/Home";
 
 export function AppNavigation() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("authToken")
   );
+  const user = JSON.parse(localStorage.getItem("user") || null);
+  const [isProfiled, setIsProfiled] = useState(
+    user ? user.made_profile : false
+  );
 
   useEffect(() => {
     const authTokenString = localStorage.getItem("authToken");
     setIsAuthenticated(!!authTokenString);
-  }, []);
+
+    if (user) {
+      setIsProfiled(user.made_profile);
+    }
+  }, [user, isAuthenticated]);
 
   const doLogin = () => {
     setIsAuthenticated(true);
@@ -32,7 +38,7 @@ export function AppNavigation() {
     <IonReactRouter>
       <Route path="/login" exact={true}>
         {isAuthenticated ? (
-          <Redirect to="/folder/:name" />
+          <Redirect to="/profile" />
         ) : (
           <Login doLogin={doLogin} />
         )}
@@ -44,30 +50,38 @@ export function AppNavigation() {
 
       <Route path="/" exact={true}>
         {isAuthenticated ? (
-          <>
-            <Redirect to="/folder/Inbox" />
-          </>
+          isProfiled ? (
+            <Redirect to="/home" />
+          ) : (
+            <Redirect to="/profile" />
+          )
         ) : (
           <Redirect to="/login" />
         )}
       </Route>
-      <Route path="/explore" exact={true}>
+      <Route path="/home" exact={true}>
         {isAuthenticated ? (
-          <>
+          isProfiled ? (
             <Layout doLogout={doLogout}>
-              <Explore />
+              <Home />
             </Layout>
-          </>
+          ) : (
+            <Redirect to="/profile" />
+          )
         ) : (
           <Redirect to="/login" />
         )}
       </Route>
 
-      <Route path="/folder/:name" exact={true}>
+      <Route path="/explore" exact={true}>
         {isAuthenticated ? (
-          <Layout doLogout={doLogout}>
-            <Page />
-          </Layout>
+          isProfiled ? (
+            <Layout doLogout={doLogout}>
+              <Explore />
+            </Layout>
+          ) : (
+            <Redirect to="/profile" />
+          )
         ) : (
           <Redirect to="/login" />
         )}
@@ -75,9 +89,13 @@ export function AppNavigation() {
 
       <Route path="/user-details/:id" exact={true}>
         {isAuthenticated ? (
-          <Layout doLogout={doLogout}>
-            <UserDetails />
-          </Layout>
+          isProfiled ? (
+            <Layout doLogout={doLogout}>
+              <UserDetails />
+            </Layout>
+          ) : (
+            <Redirect to="/profile" />
+          )
         ) : (
           <Redirect to="/login" />
         )}
@@ -94,24 +112,29 @@ export function AppNavigation() {
           <Redirect to="/login" />
         )}
       </Route>
+
       <Route path="/pending" exact={true}>
         {isAuthenticated ? (
-          <>
+          isProfiled ? (
             <Layout doLogout={doLogout}>
               <Pending />
             </Layout>
-          </>
+          ) : (
+            <Redirect to="/profile" />
+          )
         ) : (
           <Redirect to="/login" />
         )}
       </Route>
       <Route path="/circle" exact={true}>
         {isAuthenticated ? (
-          <>
+          isProfiled ? (
             <Layout doLogout={doLogout}>
               <Circle />
             </Layout>
-          </>
+          ) : (
+            <Redirect to="/profile" />
+          )
         ) : (
           <Redirect to="/login" />
         )}
