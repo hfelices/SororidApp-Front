@@ -24,6 +24,7 @@ import { cameraOutline } from "ionicons/icons";
 import * as Yup from "yup";
 import { API_URL, URL } from "../../../constants";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
+import { Spinner } from "../../../components";
 
 export function Profile() {
   const fileInputRef = useRef(null);
@@ -36,8 +37,33 @@ export function Profile() {
   const [selectedDate, setSelectedDate] = useState(
     profile.birthdate || fecha.toISOString()
   );
-  const [load, setLoad] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [towns, setTowns] = useState([]);
   
+  const getTowns = async () => {
+    try {
+      const response = await fetch(`${API_URL}towns`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      const responseData = await response.json();
+      if (responseData.success === true) {
+        setTowns(responseData.data);
+        setLoading(false);
+      } else {
+        console.log("Error! Mensaje:", responseData);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Error al realizar la solicitud:", error);
+      return [];
+    }
+  };
+
   const [present] = useIonToast();const [userImage, setUserImage] = useState(URL + profile.profile_img_path);
 
   const presentToast = (message, myclass) => {
@@ -50,7 +76,7 @@ export function Profile() {
   };
 
   useEffect(() => {
-    setLoad(true);
+    getTowns();
   }, [user]);
 
   const validationSchema = Yup.object().shape({
@@ -166,6 +192,9 @@ export function Profile() {
   };
   return (
     <>
+         {loading ? (
+        <Spinner />
+      ) : (
       <IonPage>
         <IonHeader className="profile_header">
           <div className="d-flex justify-content-center align-items-center">
@@ -235,14 +264,23 @@ export function Profile() {
               </IonModal>
             </IonItem>
             <IonItem className="profile_info_row">
-              <span>Ciudad: </span>
-              <IonInput
-                className="profile_text"
-                name="ciudad"
-                value={formik.values.ciudad}
-                onIonChange={formik.handleChange}
-              />
-            </IonItem>
+                <span>Ciudad: </span>
+                <IonSelect
+                  className="profile_selector_text"
+                  name="ciudad"
+                  value={formik.values.ciudad}
+                  onIonChange={(e) =>
+                    formik.setFieldValue("ciudad", e.detail.value)
+                  }
+                  interface="popover"
+                >
+                  {towns.map((town) => (
+                    <IonSelectOption key={town.id} value={town.id}>
+                      {town.name}
+                    </IonSelectOption>
+                  ))}
+                </IonSelect>
+              </IonItem>
             <IonItem className="profile_info_row">
               <span>Género: </span>
 
@@ -291,7 +329,7 @@ export function Profile() {
             </IonButton>
           </form>
         </IonContent>
-      </IonPage>
+      </IonPage>)}
     </>
   );
 }
