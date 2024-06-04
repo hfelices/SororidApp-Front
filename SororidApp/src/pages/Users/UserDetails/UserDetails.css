@@ -1,8 +1,8 @@
 
 .large-avatar {
   border-radius: 50%;
-  width: 10em; /* Ajusta este valor según el tamaño que desees */
-  height: 10em; /* Ajusta este valor según el tamaño que desees */
+  width: 10em; 
+  height: 10em; 
   object-fit: cover;
 }
 

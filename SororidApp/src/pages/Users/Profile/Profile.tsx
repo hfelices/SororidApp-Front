@@ -37,8 +37,8 @@ export function Profile() {
     profile.birthdate || fecha.toISOString()
   );
   const [load, setLoad] = useState(false);
-  const [userImage, setUserImage] = useState(URL + profile.profile_img_path);
-  const [present] = useIonToast();
+  
+  const [present] = useIonToast();const [userImage, setUserImage] = useState(URL + profile.profile_img_path);
 
   const presentToast = (message, myclass) => {
     present({

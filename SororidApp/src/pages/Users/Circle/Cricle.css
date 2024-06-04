@@ -4,7 +4,14 @@
 
 .small-avatar{
     border-radius: 50%;
-    width: 4em; /* Ajusta este valor según el tamaño que desees */
-    height: 4em; /* Ajusta este valor según el tamaño que desees */
+    width: 4em; 
+    height: 4em; 
+    object-fit: cover;
+}
+
+.medium-avatar{
+    border-radius: 50%;
+    width: 6em; 
+    height: 6em; 
     object-fit: cover;
 }
