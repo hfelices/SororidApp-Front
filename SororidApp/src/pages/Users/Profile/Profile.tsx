@@ -1,7 +1,6 @@
 import { useFormik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import "./Profile.css";
-// import image from "../../assets/neandermark.jpeg";
 import {
   IonHeader,
   IonInput,
@@ -32,14 +31,13 @@ export function Profile() {
   const authToken = JSON.parse(localStorage.getItem("authToken") || "");
   const user = JSON.parse(localStorage.getItem("user") || "");
   const profile = JSON.parse(localStorage.getItem("profile") || "");
-  const town = JSON.parse(localStorage.getItem("town") || "");
   const fecha = new Date();
   const [selectedDate, setSelectedDate] = useState(
     profile.birthdate || fecha.toISOString()
   );
   const [loading, setLoading] = useState(false);
   const [towns, setTowns] = useState([]);
-  
+
   const getTowns = async () => {
     try {
       const response = await fetch(`${API_URL}towns`, {
@@ -60,11 +58,12 @@ export function Profile() {
       }
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
-      return [];
+      setLoading(false);
     }
   };
 
-  const [present] = useIonToast();const [userImage, setUserImage] = useState(URL + profile.profile_img_path);
+  const [present] = useIonToast();
+  const [userImage, setUserImage] = useState(URL + profile.profile_img_path);
 
   const presentToast = (message, myclass) => {
     present({
@@ -161,7 +160,7 @@ export function Profile() {
         const responseData = await response.json();
         if (responseData.success) {
           console.log("Imagen subida con éxito:", responseData);
-          
+
           localStorage.setItem("profile", JSON.stringify(responseData.data));
 
           setUserImage(URL + responseData.data.profile_img_path);
@@ -183,86 +182,90 @@ export function Profile() {
     }
   };
 
-  const handleSubmit = (values: any) => {
-    console.log("Datos actualizados:", values);
-  };
   const handleIconClick = () => {
+    // Desencadenar el clic en el input de tipo file
     fileInputRef.current.click();
   };
+
   return (
     <>
-         {loading ? (
+      {loading ? (
         <Spinner />
       ) : (
-      <IonPage>
-        <IonHeader className="profile_header">
-          <div className="d-flex justify-content-center align-items-center">
-            <img
-              className="large-avatar"
-              src={profile.profile_img_path ? userImage : defaultAvatar}
-              alt="avatar"
-            />
-            <IonIcon
-              icon={cameraOutline}
-              color="tertiary"
-              onClick={handleIconClick}
-            />
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-              ref={fileInputRef}
-            />
-          </div>
-          <IonItem>
-            <IonText className="mt-2">{user.email}</IonText>
-          </IonItem>
-          {user.made_profile ? (
-            <></>
-          ) : (
-            <IonItem>
-              <IonText className="mt-2 text-center fw-bold" color={"sororidark"}>
-                Debes rellenar todos los campos de tu perfil antes de abandonar
-                esta página
-              </IonText>
-            </IonItem>
-          )}
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <form onSubmit={formik.handleSubmit}>
-            <IonItem className="profile_info_row">
-              <span>Nombre: </span>
-              <IonInput
-                className="profile_text"
-                name="nombre"
-                value={formik.values.nombre}
-                onIonChange={formik.handleChange}
+        <IonPage>
+          <IonHeader className="profile_header">
+            <div className="d-flex justify-content-center align-items-center">
+              <img
+                className="large-avatar"
+                src={profile.profile_img_path ? userImage : defaultAvatar}
+                alt="avatar"
               />
+              <IonIcon
+                icon={cameraOutline}
+                color="tertiary"
+                onClick={handleIconClick}
+              />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+                ref={fileInputRef}
+              />
+            </div>
+            <IonItem>
+              <IonText className="mt-2">{user.email}</IonText>
             </IonItem>
-            <IonItem className="profile_info_row">
-              <span>Fecha de Nacimiento: </span>
-              <IonDatetimeButton datetime={"time"} className="mx-4" />
-              <IonModal keepContentsMounted={true}>
-                <IonDatetime
-                  name="fechaNacimiento"
-                  showDefaultButtons={true}
-                  doneText="Seleccionar"
-                  cancelText="Cancelar"
-                  value={selectedDate}
-                  presentation="date"
-                  id="time"
-                  onIonChange={(e) => {
-                    let birthday = new Date(e.detail.value!);
-                    setSelectedDate(birthday);
-                    formik.handleChange(e);
-                  }}
+            {user.made_profile ? (
+              <></>
+            ) : (
+              <IonItem>
+                <IonText
+                  className="mt-2 text-center fw-bold"
+                  color={"sororidark"}
                 >
-                  <span slot="title">Fecha de Nacimiento</span>
-                </IonDatetime>
-              </IonModal>
-            </IonItem>
-            <IonItem className="profile_info_row">
+                  Debes rellenar todos los campos de tu perfil antes de abandonar
+                  esta página
+                </IonText>
+              </IonItem>
+            )}
+          </IonHeader>
+          <IonContent className="ion-padding">
+            <form onSubmit={formik.handleSubmit}>
+              <IonItem className="profile_info_row">
+                <span>Nombre: </span>
+                <IonInput
+                  className="profile_text"
+                  name="nombre"
+                  value={formik.values.nombre}
+                  onIonInput={(e) =>
+                    formik.setFieldValue("nombre", e.target.value)
+                  }
+                />
+              </IonItem>
+              <IonItem className="profile_info_row">
+                <span>Fecha de Nacimiento: </span>
+                <IonDatetimeButton datetime={"time"} className="mx-4" />
+                <IonModal keepContentsMounted={true}>
+                  <IonDatetime
+                    name="fechaNacimiento"
+                    showDefaultButtons={true}
+                    doneText="Seleccionar"
+                    cancelText="Cancelar"
+                    value={selectedDate}
+                    presentation="date"
+                    id="time"
+                    onIonChange={(e) => {
+                      let birthday = new Date(e.detail.value!);
+                      setSelectedDate(birthday);
+                      formik.setFieldValue("fechaNacimiento", e.detail.value);
+                    }}
+                  >
+                    <span slot="title">Fecha de Nacimiento</span>
+                  </IonDatetime>
+                </IonModal>
+              </IonItem>
+              <IonItem className="profile_info_row">
                 <span>Ciudad: </span>
                 <IonSelect
                   className="profile_selector_text"
@@ -280,55 +283,60 @@ export function Profile() {
                   ))}
                 </IonSelect>
               </IonItem>
-            <IonItem className="profile_info_row">
-              <span>Género: </span>
-
-              <IonSelect
-                className="profile_selector_text"
-                name="sexo"
-                value={formik.values.sexo}
-                onIonChange={(e) =>
-                  formik.setFieldValue("sexo", e.detail.value)
-                }
-                interface="popover"
+              <IonItem className="profile_info_row">
+                <span>Género: </span>
+                <IonSelect
+                  className="profile_selector_text"
+                  name="sexo"
+                  value={formik.values.sexo}
+                  onIonChange={(e) =>
+                    formik.setFieldValue("sexo", e.detail.value)
+                  }
+                  interface="popover"
+                >
+                  <IonSelectOption value="female">Mujer</IonSelectOption>
+                  <IonSelectOption value="male">Hombre</IonSelectOption>
+                  <IonSelectOption value="nonbinary">No binario</IonSelectOption>
+                </IonSelect>
+              </IonItem>
+              <IonItem className="profile_info_row">
+                <span>Contraseña de Emergencia: </span>
+                <IonInput
+                  type="password"
+                  className="profile_text"
+                  name="contraseñaEmergencia"
+                  value={formik.values.contraseñaEmergencia}
+                  onIonInput={(e) =>
+                    formik.setFieldValue(
+                      "contraseñaEmergencia",
+                      e.target.value
+                    )
+                  }
+                />
+              </IonItem>
+              {Object.keys(formik.errors).length > 0 && (
+                <div className="ion-text-center mt-3">
+                  {Object.keys(formik.errors).map((key) => (
+                    <IonText color="danger" key={key}>
+                      {formik.errors[key]}
+                    </IonText>
+                  ))}
+                </div>
+              )}
+              <IonButton
+                expand="block"
+                className="mt-3 my-large-button"
+                type="submit"
+                shape="round"
+                fill="outline"
+                disabled={formik.isSubmitting}
               >
-                <IonSelectOption value="female">Mujer</IonSelectOption>
-                <IonSelectOption value="male">Hombre</IonSelectOption>
-                <IonSelectOption value="nonbinary">No binario</IonSelectOption>
-              </IonSelect>
-            </IonItem>
-            <IonItem className="profile_info_row">
-              <span>Contraseña de Emergencia: </span>
-              <IonInput
-                type="password"
-                className="profile_text"
-                name="contraseñaEmergencia"
-                value={formik.values.contraseñaEmergencia}
-                onIonChange={formik.handleChange}
-              />
-            </IonItem>
-            {Object.keys(formik.errors).length > 0 && (
-              <div className="ion-text-center mt-3">
-                {Object.keys(formik.errors).map((key) => (
-                  <IonText color="danger" key={key}>
-                    {formik.errors[key]}
-                  </IonText>
-                ))}
-              </div>
-            )}
-            <IonButton
-              expand="block"
-              className="mt-3 my-large-button"
-              type="submit"
-              shape="round"
-              fill="outline"
-              disabled={formik.isSubmitting}
-            >
-              {formik.isSubmitting ? "Enviando..." : "Actualizar"}
-            </IonButton>
-          </form>
-        </IonContent>
-      </IonPage>)}
+                {formik.isSubmitting ? "Enviando..." : "Actualizar"}
+              </IonButton>
+            </form>
+          </IonContent>
+        </IonPage>
+      )}
     </>
   );
 }
