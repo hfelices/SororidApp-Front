@@ -187,7 +187,6 @@ export function Profile() {
     console.log("Datos actualizados:", values);
   };
   const handleIconClick = () => {
-    // Desencadenar el clic en el input de tipo file
     fileInputRef.current.click();
   };
   return (
