@@ -143,7 +143,10 @@ export const Login: React.FC<LoginProps> = ({ doLogin }) => {
               )}
             </IonButton>
           </form>
-          <IonButton expand="block" onClick={handleGoToRegister}>
+          <IonButton  expand="block"
+              
+              shape="round"
+              fill="outline" onClick={handleGoToRegister}>
             Ir a Registro
           </IonButton>
         </IonContent>

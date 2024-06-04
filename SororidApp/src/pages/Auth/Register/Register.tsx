@@ -26,7 +26,7 @@ export function Register() {
       message: message,
       duration: 1500,
       position: "middle",
-      cssClass: myclass
+      cssClass: myclass,
     });
   };
   const formik = useFormik({
@@ -62,18 +62,23 @@ export function Register() {
         const responseData = await response.json();
         if (responseData.success === true) {
           console.log("OK! Mensaje:", responseData);
-          presentToast('Registrado con éxito', 'green');
+          presentToast("Registrado con éxito", "green");
           setTimeout(() => {
             router.push("/login");
-            
           }, 1500);
         } else {
           console.log("Error! Mensaje:", responseData);
-          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+          presentToast(
+            "Ha ocurrido un error, porfavor vuélvalo a intentar",
+            "red"
+          );
         }
       } catch (error) {
         console.error("Error al realizar la solicitud:", error);
-        presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+        presentToast(
+          "Ha ocurrido un error, porfavor vuélvalo a intentar",
+          "red"
+        );
       }
     },
   });
@@ -150,10 +155,15 @@ export function Register() {
               {" "}
               {formik.isSubmitting ? <IonSpinner name="crescent" /> : "Crear"}
             </IonButton>
+            <IonButton
+              expand="block"
+              shape="round"
+              fill="outline"
+              onClick={handleGoToLogin}
+            >
+              Ir a Login
+            </IonButton>
           </form>
-          <IonButton expand="block" onClick={handleGoToLogin}>
-            Ir a Login
-          </IonButton>
         </IonContent>
       </IonPage>
     </>

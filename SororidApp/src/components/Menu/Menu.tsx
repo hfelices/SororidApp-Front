@@ -133,6 +133,12 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       console.error("Error al realizar la solicitud:", error);
     }
   };
+
+  const deleteStorage =()=>{
+localStorage.removeItem("authToken") ;
+localStorage.removeItem("user") ;
+localStorage.removeItem("profile") ;
+  }
   useEffect(() => {
     getPendingRelations();
   }, []);
@@ -197,6 +203,18 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
                 </a>
               );
             })}
+            <IonMenuToggle onClick={deleteStorage} autoHide={false}>
+              <IonItem>
+                <IonIcon
+                  aria-hidden="true"
+                  slot="start"
+                  ios={exitOutline}
+                  md={exitSharp}
+                  color="danger"
+                />
+                <IonLabel className="text-danger">Eliminar Storage</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
             <IonMenuToggle onClick={logout} autoHide={false}>
               <IonItem>
                 <IonIcon

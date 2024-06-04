@@ -7,6 +7,7 @@ import { Login, Register, Profile, Circle, Pending } from "../pages";
 import { Explore } from "../pages/Users/Explore";
 import { UserDetails } from "../pages/Users/UserDetails";
 import { Home } from "../pages/Home";
+import { NewRoute } from "../pages/Routes";
 
 export function AppNavigation() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -64,6 +65,20 @@ export function AppNavigation() {
           isProfiled ? (
             <Layout doLogout={doLogout}>
               <Home />
+            </Layout>
+          ) : (
+            <Redirect to="/profile" />
+          )
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
+
+      <Route path="/new-route" exact={true}>
+        {isAuthenticated ? (
+          isProfiled ? (
+            <Layout doLogout={doLogout}>
+              <NewRoute />
             </Layout>
           ) : (
             <Redirect to="/profile" />
