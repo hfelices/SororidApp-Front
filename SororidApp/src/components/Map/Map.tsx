@@ -6,7 +6,7 @@ import { URL } from "../../constants";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiaGZlbGljZXMiLCJhIjoiY2x3ejZmZGxpMDQwbzJzc2Z6YzV3OWM4MiJ9.Zf9F1BMdCxy465v2ZdHuPQ";
 
-export function Map({ customHeight}) {
+export function Map({ customHeight, editableMap}) {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const authToken = JSON.parse(localStorage.getItem("authToken") || "");

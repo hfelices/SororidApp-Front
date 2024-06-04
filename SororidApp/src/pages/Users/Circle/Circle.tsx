@@ -3,22 +3,25 @@ import React from "react";
 import { API_URL, URL } from "../../../constants";
 import "./Cricle.css";
 import {
-  IonAvatar,
   IonChip,
+  IonCol,
   IonContent,
+  IonGrid,
   IonIcon,
   IonItem,
   IonLabel,
   IonList,
+  IonRow,
 } from "@ionic/react";
 import { Link } from "react-router-dom";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 import {
+  checkmark,
+  checkmarkCircleOutline,
+  checkmarkDone,
   chevronDownOutline,
   chevronUpOutline,
-  compassOutline,
   hourglassOutline,
-  personAddOutline,
 } from "ionicons/icons";
 import { Spinner } from "../../../components";
 export function Circle() {
@@ -164,34 +167,58 @@ export function Circle() {
                           style={{ textDecoration: "none" }}
                         >
                           <IonItem>
-                            <img
-                              className="small-avatar"
-                              src={
-                                contact.profile_img_path
-                                  ? `${URL}${contact.profile_img_path}`
-                                  : defaultAvatar
-                              }
-                              alt="avatar"
-                            />
-                            <IonLabel
-                              className="fw-bold text-center"
-                              color={
-                                contact.status === "pending"
-                                  ? index === 3
-                                    ? "danger"
-                                    : "sororilight"
-                                  : index === 3
-                                  ? "danger"
-                                  : "sororidark"
-                              }
-                            >
-                              {contact.name}
-                              {contact.status == "pending" ? (
-                                <IonIcon icon={hourglassOutline}></IonIcon>
-                              ) : (
-                                <></>
-                              )}
-                            </IonLabel>
+                            <IonGrid>
+                              <IonRow>
+                                <IonCol
+                                  size="3"
+                                  className=" d-flex align-items-center"
+                                >
+                                  <img
+                                    className="small-avatar"
+                                    src={
+                                      contact.profile_img_path
+                                        ? `${URL}${contact.profile_img_path}`
+                                        : defaultAvatar
+                                    }
+                                    alt="avatar"
+                                  />
+                                </IonCol>
+                                <IonCol
+                                  size="7"
+                                  className=" d-flex align-items-center"
+                                >
+                                  <IonLabel
+                                    className="fw-bold text-left"
+                                    color={
+                                      contact.status === "pending"
+                                        ? index === 3
+                                          ? "danger"
+                                          : "sororilight"
+                                        : index === 3
+                                        ? "danger"
+                                        : "sororidark"
+                                    }
+                                  >
+                                    {contact.name}
+                                  </IonLabel>
+                                </IonCol>
+                                <IonCol className=" d-flex align-items-center justify-content-end">
+                                  <IonLabel>
+                                    {contact.status == "pending" ? (
+                                      <IonIcon
+                                        color={"sororilight"}
+                                        icon={hourglassOutline}
+                                      />
+                                    ) : (
+                                      <IonIcon
+                                        color={"sororidark"}
+                                        icon={checkmark}
+                                      />
+                                    )}
+                                  </IonLabel>
+                                </IonCol>
+                              </IonRow>
+                            </IonGrid>
                           </IonItem>
                         </Link>
                       ) : null
