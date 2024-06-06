@@ -14,18 +14,21 @@ import "./Explore.css";
 import { API_URL, URL } from "../../../constants";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 import { Link } from 'react-router-dom';
+
 export function Explore() {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const authToken = JSON.parse(localStorage.getItem("authToken") || "");
   const user = JSON.parse(localStorage.getItem("user") || "");
 
-  const getExploreUsers = async (page) => {
+  const getExploreUsers = async (page, searchTerm = "") => {
+    console.log(`Fetching users with search term: ${searchTerm} and page: ${page}`); // Log
     try {
       const response = await fetch(
-        `${API_URL}relations/${user.id}/explore?page=${page}`,
+        `${API_URL}relations/${user.id}/explore?page=${page}&search=${searchTerm}`,
         {
           method: "GET",
           headers: {
@@ -48,11 +51,20 @@ export function Explore() {
     }
   };
 
-  const generateItems = async () => {
+  const generateItems = async (reset = false) => {
     try {
-      const newUsers = await getExploreUsers(page);
-      if (newUsers.length > 0) {
+      if (reset) {
+        setPage(1);
+        setHasMore(true);
+        setUsers([]);
+      }
+      const newUsers = await getExploreUsers(reset ? 1 : page, searchTerm);
+      if (reset) {
+        setUsers(newUsers);
+      } else {
         setUsers((prevUsers) => [...prevUsers, ...newUsers]);
+      }
+      if (newUsers.length > 0) {
         setPage((prevPage) => prevPage + 1);
       } else {
         setHasMore(false);
@@ -63,8 +75,9 @@ export function Explore() {
   };
 
   useEffect(() => {
-    generateItems();
-  }, []);
+    console.log(`Search term changed: ${searchTerm}`); // Log
+    generateItems(true);
+  }, [searchTerm]);
 
   const loadMore = async (event) => {
     if (!hasMore) {
@@ -75,42 +88,51 @@ export function Explore() {
     event.target.complete();
   };
 
+  const handleSearch = (e) => {
+    const value = e.detail.value;
+    setSearchTerm(value);
+  };
+
   return (
     <>
-   <div className="main-content">
-    <IonSearchbar animated={true} placeholder="Buscar por Nombre"></IonSearchbar>
-    <IonContent className="ion-padding ">
-    <IonList>
-      {users.map((user, index) => (
-        user.profile.name ? (
-          <Link to={`/user-details/${user.id}`} key={user.id} style={{ textDecoration: 'none' }}>
-            <IonItem>
-              <IonAvatar className="mx-2" slot="start">
-                <img
-                  src={
-                    user.profile.profile_img_path
-                      ? URL + user.profile.profile_img_path
-                      : defaultAvatar
-                  }
-                  alt="avatar"
-                />
-              </IonAvatar>
-              <IonLabel className="text-center fw-bold" color="sororidark">{user.profile.name}</IonLabel>
-            </IonItem>
-          </Link>
-          
-        ) : <></>
-      ))}
-    </IonList>
-    <IonInfiniteScroll
-      threshold="100px"
-      disabled={!hasMore}
-      onIonInfinite={loadMore}
-    >
-      <IonInfiniteScrollContent loadingText="Cargando más usuarios..."></IonInfiniteScrollContent>
-    </IonInfiniteScroll>
-  </IonContent>
-  </div>
-  </>
+      <div className="main-content">
+        <IonSearchbar 
+          animated={true} 
+          placeholder="Buscar por Nombre" 
+          value={searchTerm}
+          onIonChange={handleSearch}
+        ></IonSearchbar>
+        <IonContent className="ion-padding ">
+          <IonList>
+            {users.map((user, index) => (
+              user.profile.name ? (
+                <Link to={`/user-details/${user.id}`} key={user.id} style={{ textDecoration: 'none' }}>
+                  <IonItem>
+                    <IonAvatar className="mx-2" slot="start">
+                      <img
+                        src={
+                          user.profile.profile_img_path
+                            ? URL + user.profile.profile_img_path
+                            : defaultAvatar
+                        }
+                        alt="avatar"
+                      />
+                    </IonAvatar>
+                    <IonLabel className="text-center fw-bold" color="sororidark">{user.profile.name}</IonLabel>
+                  </IonItem>
+                </Link>
+              ) : <></>
+            ))}
+          </IonList>
+          <IonInfiniteScroll
+            threshold="100px"
+            disabled={!hasMore}
+            onIonInfinite={loadMore}
+          >
+            <IonInfiniteScrollContent loadingText="Cargando más usuarios..."></IonInfiniteScrollContent>
+          </IonInfiniteScroll>
+        </IonContent>
+      </div>
+    </>
   );
 }
