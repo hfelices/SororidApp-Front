@@ -1,0 +1,10 @@
+.emergency-call-button{
+    position: fixed;
+    width: 100vw;
+    height: 10vh;
+    margin: 0;
+    font-size: 20px;
+}
+.cuadro-map-text {
+    font-size: 8px;
+}

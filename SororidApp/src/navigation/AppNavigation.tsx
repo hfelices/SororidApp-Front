@@ -8,6 +8,7 @@ import { Explore } from "../pages/Users/Explore";
 import { UserDetails } from "../pages/Users/UserDetails";
 import { Home } from "../pages/Home";
 import { NewRoute } from "../pages/Routes";
+import { CurrentRoute } from "../pages/Routes/CurrentRoute";
 
 export function AppNavigation() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -79,6 +80,20 @@ export function AppNavigation() {
           isProfiled ? (
             <Layout doLogout={doLogout}>
               <NewRoute />
+            </Layout>
+          ) : (
+            <Redirect to="/profile" />
+          )
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
+
+      <Route path="/current-route" exact={true}>
+        {isAuthenticated ? (
+          isProfiled ? (
+            <Layout doLogout={doLogout}>
+              <CurrentRoute />
             </Layout>
           ) : (
             <Redirect to="/profile" />
