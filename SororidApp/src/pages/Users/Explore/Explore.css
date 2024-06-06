@@ -2,3 +2,29 @@
 
     height: 88%;
 }
+.searchbar-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .custom-searchbar {
+    --icon-display: none; /* Hide the default search icon */
+    width: 92%;
+  }
+  
+  .search-icon-button {
+    position: absolute;
+    right: 0;
+    top: 45%;
+    transform: translateY(-50%);
+    height: auto;
+    padding: 0;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ion-color-primary);
+  }
+  

@@ -9,7 +9,10 @@ import {
   IonLabel,
   IonHeader,
   IonSearchbar,
+  IonButton,
+  IonIcon,
 } from "@ionic/react";
+import { searchOutline } from "ionicons/icons"; // Importing search icon
 import "./Explore.css";
 import { API_URL, URL } from "../../../constants";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
@@ -93,16 +96,31 @@ export function Explore() {
     setSearchTerm(value);
   };
 
+  const handleSearchButtonClick = () => {
+    generateItems(true);
+  };
+
   return (
     <>
       <div className="main-content">
-        <IonSearchbar 
-          animated={true} 
-          placeholder="Buscar por Nombre" 
-          value={searchTerm}
-          onIonChange={handleSearch}
-        ></IonSearchbar>
-        <IonContent className="ion-padding ">
+        <div className="searchbar-container">
+          <IonSearchbar
+            animated={true}
+            placeholder="Buscar por Nombre"
+            value={searchTerm}
+            onIonChange={handleSearch}
+            className="custom-searchbar"
+            showCancelButton="never"
+          ></IonSearchbar>
+          <IonButton
+            className="search-icon-button fw-bold"
+            onClick={handleSearchButtonClick}
+            fill="clear"
+          >
+            <IonIcon icon={searchOutline} />
+          </IonButton>
+        </div>
+        <IonContent className="ion-padding">
           <IonList>
             {users.map((user, index) => (
               user.profile.name ? (

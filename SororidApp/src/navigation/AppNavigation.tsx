@@ -1,13 +1,14 @@
 import { IonReactRouter } from "@ionic/react-router";
 import React, { useEffect, useState } from "react";
 import { Layout } from "../components";
-import { Redirect, Route } from "react-router";
+import { Redirect, Route, Switch } from "react-router";
 import Page from "../pages/Page";
 import { Login, Register, Profile, Circle, Pending } from "../pages";
 import { Explore } from "../pages/Users/Explore";
 import { UserDetails } from "../pages/Users/UserDetails";
 import { Home } from "../pages/Home";
 import { NewRoute } from "../pages/Routes";
+import NotFound from "../pages/NotFound/NotFound";
 
 export function AppNavigation() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -37,6 +38,7 @@ export function AppNavigation() {
 
   return (
     <IonReactRouter>
+    <Switch>
       <Route path="/login" exact={true}>
         {isAuthenticated ? (
           <Redirect to="/profile" />
@@ -154,6 +156,11 @@ export function AppNavigation() {
           <Redirect to="/login" />
         )}
       </Route>
+      <Route path="*">
+          <NotFound />
+        </Route>
+        
+    </Switch>
     </IonReactRouter>
   );
 }
