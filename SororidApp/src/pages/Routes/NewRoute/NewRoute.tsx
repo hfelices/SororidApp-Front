@@ -39,6 +39,7 @@ export function NewRoute() {
   const markerRef = useRef(null);
   const clickMarkerRef = useRef(null);
   const directions = useRef(null);
+  const [route, setRoute] = useState(null);
 
   useEffect(() => {
     const checkPermissions = async () => {
@@ -127,19 +128,6 @@ export function NewRoute() {
 
     map.current.addControl(directions.current, "top-left");
 
-    // Hide the origin and destination markers
-    const hideMarkers = () => {
-      const originMarker = document.querySelector(".mapbox-directions-origin");
-      const destinationMarker = document.querySelector(
-        ".mapbox-directions-destination"
-      );
-      if (originMarker) originMarker.style.display = "none";
-      if (destinationMarker) destinationMarker.style.display = "none";
-    };
-
-    directions.current.on("origin", hideMarkers);
-    directions.current.on("destination", hideMarkers);
-
     map.current.on("click", (e) => {
       const { lng, lat } = e.lngLat;
       if (clickMarkerRef.current) {
@@ -153,49 +141,51 @@ export function NewRoute() {
 
       // Add the destination to the directions
       directions.current.setDestination([lng, lat]);
+    });
 
-      // Wait for the directions to be updated, then change the route color
-      directions.current.on("route", (e) => {
-        const route = e.route[0];
-        setDistance((route.distance / 1000).toFixed(2) + " km");
-        setDuration((route.duration / 60).toFixed(2) + " min");
-        // Change the main route color
-        const routeLayer = map.current.getLayer("directions-route-line");
-        if (routeLayer) {
-          map.current.setPaintProperty(
-            "directions-route-line",
-            "line-color",
-            "#9984b8"
-          );
-        }
-        // Change the casing (outline) route color
-        const routeLayerCasing = map.current.getLayer(
-          "directions-route-line-casing"
-        );
-        if (routeLayerCasing) {
-          map.current.setPaintProperty(
-            "directions-route-line-casing",
-            "line-color",
-            "#85267c"
-          );
-        }
+    directions.current.on("route", (e) => {
+      const route = e.route[0];
+      setDistance((route.distance / 1000).toFixed(2) + " km");
+      setDuration((route.duration / 60).toFixed(2) + " min");
+      setRoute({
+        origin: route.legs[0].steps[0].maneuver.location,
+        destination: route.legs[0].steps[route.legs[0].steps.length - 1].maneuver.location,
+        distance: route.distance,
+        duration: route.duration
       });
+
+      // Change the main route color
+      const routeLayer = map.current.getLayer("directions-route-line");
+      if (routeLayer) {
+        map.current.setPaintProperty(
+          "directions-route-line",
+          "line-color",
+          "#9984b8"
+        );
+      }
+      // Change the casing (outline) route color
+      const routeLayerCasing = map.current.getLayer(
+        "directions-route-line-casing"
+      );
+      if (routeLayerCasing) {
+        map.current.setPaintProperty(
+          "directions-route-line-casing",
+          "line-color",
+          "#85267c"
+        );
+      }
     });
   }, [lng, lat, zoom]);
 
   const saveCurrentRoute = () => {
-    if (directions.current) {
-      const route = directions.current.getRoute();
+    if (route) {
       const routeData = {
         distance,
         duration,
         coordinates: { lng, lat },
         markerCoordinates: markerRef.current.getLngLat(),
         clickMarkerCoordinates: clickMarkerRef.current ? clickMarkerRef.current.getLngLat() : null,
-        route: {
-          origin: route[0].origin,
-          destination: route[0].destination
-        }
+        route
       };
       localStorage.setItem('currentRoute', JSON.stringify(routeData));
     }
@@ -204,7 +194,7 @@ export function NewRoute() {
   return (
     <>
       <IonItem>
-        <IonHeader class="h5 text-center fw-bold">
+        <IonHeader className="h5 text-center fw-bold">
           <IonButton onClick={saveCurrentRoute}>Test</IonButton>
           <a href="/current-route">
             <IonButton onClick={saveCurrentRoute}>Current Route</IonButton>
