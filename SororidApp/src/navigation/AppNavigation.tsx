@@ -39,7 +39,7 @@ export function AppNavigation() {
 
   return (
     <IonReactRouter>
-    <Switch>
+      <Switch>
       <Route path="/login" exact={true}>
         {isAuthenticated ? (
           <Redirect to="/profile" />
