@@ -1,16 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
-import { URL } from "../../../constants";
+import { API_URL, URL } from "../../../constants";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
-import { IonButton, IonIcon } from "@ionic/react";
+import {
+  IonButton,
+  IonButtons,
+  IonIcon,
+  useIonRouter,
+  useIonToast,
+} from "@ionic/react";
 import { call } from "ionicons/icons";
-import "./CurrentRoute.css"
+import "./CurrentRoute.css";
+
 mapboxgl.accessToken =
   "pk.eyJ1IjoiaGZlbGljZXMiLCJhIjoiY2x3ejZmZGxpMDQwbzJzc2Z6YzV3OWM4MiJ9.Zf9F1BMdCxy465v2ZdHuPQ";
 
 export function CurrentRoute() {
+  const router = useIonRouter();
+  const [present] = useIonToast();
   const mapContainer = useRef(null);
+  const authToken = JSON.parse(localStorage.getItem("authToken") || "");
   const map = useRef(null);
   const profile = JSON.parse(localStorage.getItem("profile") || "");
   const userImage = URL + profile.profile_img_path;
@@ -18,11 +28,23 @@ export function CurrentRoute() {
   const clickMarkerRef = useRef(null);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
+  const [routeId, setRouteId] = useState("");
+  const [estimatedEndTime, setEstimatedEndTime] = useState(null);
+  const intervalId = useRef(null); // Use useRef to hold the interval ID
+
+  const presentToast = (message, myclass) => {
+    present({
+      message: message,
+      duration: 1500,
+      position: "middle",
+      cssClass: myclass,
+    });
+  };
 
   useEffect(() => {
     const storedRoute = JSON.parse(localStorage.getItem("currentRoute"));
     if (!storedRoute) {
-      console.error("No route found in localStorage");
+      router.push("/");
       return;
     }
 
@@ -33,10 +55,14 @@ export function CurrentRoute() {
       markerCoordinates,
       clickMarkerCoordinates,
       route,
+      time_estimated,
+      route_id,
     } = storedRoute;
 
     setDistance(distance);
     setDuration(duration);
+    setRouteId(route_id);
+    setEstimatedEndTime(time_estimated);
 
     if (map.current) return; // Initialize map only once
 
@@ -67,7 +93,6 @@ export function CurrentRoute() {
       .setLngLat([clickMarkerCoordinates.lng, clickMarkerCoordinates.lat])
       .addTo(map.current);
 
-    // Fetch the route and add it to the map
     async function fetchRoute() {
       const response = await fetch(
         `https://api.mapbox.com/directions/v5/mapbox/walking/${route.origin.join(
@@ -95,7 +120,7 @@ export function CurrentRoute() {
           "line-cap": "round",
         },
         paint: {
-          "line-color": "#3887be",
+          "line-color": "#85267c",
           "line-width": 5,
           "line-opacity": 0.75,
         },
@@ -104,7 +129,6 @@ export function CurrentRoute() {
 
     map.current.on("load", fetchRoute);
 
-    // Watch the user's position and update the marker
     const watchId = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -120,11 +144,95 @@ export function CurrentRoute() {
       }
     );
 
-    // Cleanup on unmount
+    
+
     return () => {
       navigator.geolocation.clearWatch(watchId);
     };
-  }, []);
+  }, [router, profile.profile_img_path, userImage]);
+
+  useEffect(() => {
+    if (routeId != "") {
+      intervalId.current = setInterval(() => {
+        updatePosition()
+      }, 30000);
+    }
+  }, [routeId])
+  
+  const endRoute = async () => {
+    const now = formatDateTime(new Date());
+    try {
+      const response = await fetch(API_URL + "routes/" + routeId, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          status: "ended",
+          time_end: now,
+        }),
+      });
+      const responseData = await response.json();
+      if (responseData.success === true) {
+        console.log("OK! Mensaje:", responseData);
+        clearInterval(intervalId.current);
+        presentToast("Ruta finalizada correctamente", "sororidad");
+        localStorage.removeItem("currentRoute");
+        router.push("/");
+      } else {
+        console.log("Error! Mensaje:", responseData);
+      }
+    } catch (error) {
+      console.error("Error al realizar la solicitud:", error);
+    }
+  };
+
+  const updatePosition = async () => {
+    
+    try {
+      const response = await fetch(API_URL + "routes/" + routeId
+        , {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          coordinates_lon_now: markerRef.current.getLngLat().lng,
+          coordinates_lat_now: markerRef.current.getLngLat().lat,
+        }),
+      });
+      const responseData = await response.json();
+      if (responseData.success === true) {
+        console.log("OK! Mensaje:", responseData);
+      } else {
+        console.log("Error! Mensaje:", responseData);
+      }
+    } catch (error) {
+      console.error("Error al realizar la solicitud:", error);
+    }
+  };
+
+  const formatTime = (date) => {
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+  };
 
   return (
     <>
@@ -145,13 +253,28 @@ export function CurrentRoute() {
           <p className="cuadro-map-text mb-0">
             Duración aproximada: {duration}
           </p>
+          <p className="cuadro-map-text mb-0">
+            Hora estimada de llegada:{" "}
+            {estimatedEndTime && formatTime(new Date(estimatedEndTime))}
+          </p>
         </div>
       )}
-      <a href="" className="text-decoration-none">
-        <IonButton expand="full" className="emergency-call-button" color={"danger"}>
-          <span className="mx-1 fw-bold">LAMAR 112</span> <IonIcon icon={call}></IonIcon>
+      <div className="d-flex">
+        <IonButton
+          expand="full"
+          color={"sororidark"}
+          className="route-button"
+          onClick={endRoute}
+        >
+          <span className="mx-1 fw-bold">Finalizar Ruta</span>
         </IonButton>
-      </a>
+        <a href="" className="text-decoration-none">
+          <IonButton expand="full" color={"danger"} className="route-button">
+            <span className="mx-1 fw-bold">LAMAR 112</span>{" "}
+            <IonIcon icon={call}></IonIcon>
+          </IonButton>
+        </a>
+      </div>
     </>
   );
 }
