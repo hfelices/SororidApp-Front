@@ -72,6 +72,8 @@ export function Circle() {
         },
       });
       const responseData = await response.json();
+      console.log(' CONTACTS:');
+      console.log(responseData);
       if (responseData.success) {
         setContacts(responseData.data);
       } else {
@@ -93,7 +95,10 @@ export function Circle() {
         },
       });
       const responseData = await response.json();
+      
       if (responseData.success) {
+        console.log(`EXTENDED CONTACTS`);
+        console.log(responseData);
         setExtendedContacts(responseData.data);
         setLoading(false);
       } else {

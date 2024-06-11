@@ -7,7 +7,7 @@ import { Login, Register, Profile, Circle, Pending } from "../pages";
 import { Explore } from "../pages/Users/Explore";
 import { UserDetails } from "../pages/Users/UserDetails";
 import { Home } from "../pages/Home";
-import { NewRoute } from "../pages/Routes";
+import { NewRoute, ViewRoute } from "../pages/Routes";
 import NotFound from "../pages/NotFound/NotFound";
 import { CurrentRoute } from "../pages/Routes/CurrentRoute";
 
@@ -94,9 +94,9 @@ export function AppNavigation() {
       <Route path="/current-route" exact={true}>
         {isAuthenticated ? (
           isProfiled ? (
-            <Layout doLogout={doLogout}>
+           
               <CurrentRoute />
-            </Layout>
+        
           ) : (
             <Redirect to="/profile" />
           )
@@ -124,6 +124,20 @@ export function AppNavigation() {
           isProfiled ? (
             <Layout doLogout={doLogout}>
               <UserDetails />
+            </Layout>
+          ) : (
+            <Redirect to="/profile" />
+          )
+        ) : (
+          <Redirect to="/login" />
+        )}
+      </Route>
+
+      <Route path="/view-route/:id" exact={true}>
+        {isAuthenticated ? (
+          isProfiled ? (
+            <Layout doLogout={doLogout}>
+              <ViewRoute />
             </Layout>
           ) : (
             <Redirect to="/profile" />

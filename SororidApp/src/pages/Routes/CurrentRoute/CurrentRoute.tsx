@@ -5,7 +5,6 @@ import { API_URL, URL } from "../../../constants";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
 import {
   IonButton,
-  IonButtons,
   IonIcon,
   useIonRouter,
   useIonToast,
@@ -236,7 +235,7 @@ export function CurrentRoute() {
 
   return (
     <>
-      <div ref={mapContainer} style={{ width: "100%", height: "80vh" }} />
+      <div ref={mapContainer} style={{ width: "100%", height: "95vh" }} />
       {distance && duration && (
         <div
           style={{

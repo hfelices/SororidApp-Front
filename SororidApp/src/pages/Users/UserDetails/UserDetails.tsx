@@ -4,15 +4,9 @@ import "./UserDetails.css";
 import { useParams } from "react-router-dom";
 import {
   IonActionSheet,
-  IonAvatar,
   IonButton,
-  IonButtons,
-  IonContent,
   IonHeader,
-  IonIcon,
-  IonItem,
   IonText,
-  IonToolbar,
   useIonToast,
 } from "@ionic/react";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
@@ -30,7 +24,7 @@ export function UserDetails() {
       message: message,
       duration: 1500,
       position: "middle",
-      cssClass: myclass
+      cssClass: myclass,
     });
   };
   const getUser = async (id) => {
@@ -72,7 +66,7 @@ export function UserDetails() {
       const responseData = await response.json();
       if (responseData.success === true) {
         setRelation(responseData.data.find((elemento) => elemento.id == id));
-        console.log(responseData.data)
+        console.log(responseData.data);
       } else {
         console.log("Error! Mensaje:", responseData);
         return {};
@@ -100,73 +94,89 @@ export function UserDetails() {
             user_1: currentUser.id,
             user_2: user.user.id,
             type: type,
-            status: type == "blocked" ? "active": "pending",
+            status: type == "blocked" ? "active" : "pending",
           }),
         });
         const responseData = await response.json();
         if (responseData.success === true) {
           setRelation(responseData.data);
-          presentToast('Solicitud mandada con éxito', 'green');
+          presentToast("Solicitud mandada con éxito", "green");
         } else {
           console.log("Error! Mensaje:", responseData);
-          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+          presentToast(
+            "Ha ocurrido un error, porfavor vuélvalo a intentar",
+            "red"
+          );
           return {};
         }
       } else if (typesModify.includes(type)) {
-        const response = await fetch(`${API_URL}relations/${relation.relation_id}`, {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({
-            type: type,
-          }),
-        });
+        const response = await fetch(
+          `${API_URL}relations/${relation.relation_id}`,
+          {
+            method: "PUT",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({
+              type: type,
+            }),
+          }
+        );
         const responseData = await response.json();
         if (responseData.success === true) {
           setRelation(responseData.data);
-          presentToast('Relación modificada con éxito', 'green');
+          presentToast("Relación modificada con éxito", "green");
         } else {
           console.log("Error! Mensaje:", responseData);
-          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+          presentToast(
+            "Ha ocurrido un error, porfavor vuélvalo a intentar",
+            "red"
+          );
           return {};
         }
-      }else if (typesDelete.includes(type)) {
-        const response = await fetch(`${API_URL}relations/${relation.relation_id}`, {
-          method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
+      } else if (typesDelete.includes(type)) {
+        const response = await fetch(
+          `${API_URL}relations/${relation.relation_id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
         const responseData = await response.json();
         if (responseData.success === true) {
           setRelation(undefined);
-          presentToast('Relacion eliminada con éxito', 'green');
+          presentToast("Relacion eliminada con éxito", "green");
         } else {
           console.log("Error! Mensaje:", responseData);
-          presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+          presentToast(
+            "Ha ocurrido un error, porfavor vuélvalo a intentar",
+            "red"
+          );
           return {};
         }
-      }  else {
-        console.log("invalid type"+ type)
-        presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+      } else {
+        console.log("invalid type" + type);
+        presentToast(
+          "Ha ocurrido un error, porfavor vuélvalo a intentar",
+          "red"
+        );
       }
-
     } catch (error) {
       console.error("Error al realizar la solicitud:", error);
-      presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
+      presentToast("Ha ocurrido un error, porfavor vuélvalo a intentar", "red");
       return {};
     }
   };
-  
+
   useEffect(() => {
     getRelation(id);
     getUser(id);
-    
   }, []);
 
   return (
@@ -229,7 +239,6 @@ export function UserDetails() {
                           },
                           handler: () => {
                             relationHandler("unblock");
-                           
                           },
                         },
                         {
@@ -287,7 +296,6 @@ export function UserDetails() {
                           },
                           handler: () => {
                             relationHandler("delete");
-                           
                           },
                         },
                         {
@@ -312,7 +320,6 @@ export function UserDetails() {
                           },
                           handler: () => {
                             relationHandler("go_blocked");
-                           
                           },
                         },
                         {
@@ -342,7 +349,6 @@ export function UserDetails() {
                             },
                             handler: () => {
                               relationHandler("go_second");
-                             
                             },
                           },
                           {
@@ -372,7 +378,6 @@ export function UserDetails() {
                             },
                             handler: () => {
                               relationHandler("go_first");
-                             
                             },
                           },
                           {
@@ -414,7 +419,6 @@ export function UserDetails() {
                         },
                         handler: () => {
                           relationHandler("first");
-                         
                         },
                       },
                       {
@@ -425,7 +429,6 @@ export function UserDetails() {
                         },
                         handler: () => {
                           relationHandler("second");
-                         
                         },
                       },
                       {
@@ -459,7 +462,6 @@ export function UserDetails() {
                         },
                         handler: () => {
                           relationHandler("blocked");
-                         
                         },
                       },
                       {

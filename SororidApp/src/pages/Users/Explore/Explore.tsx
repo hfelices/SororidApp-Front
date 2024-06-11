@@ -42,8 +42,11 @@ export function Explore() {
         }
       );
       const responseData = await response.json();
+
       if (responseData.success === true) {
         return responseData.users.data;
+       
+        
       } else {
         console.log("Error! Mensaje:", responseData);
         return [];
