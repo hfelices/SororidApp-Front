@@ -147,7 +147,7 @@ export function CurrentRoute() {
     if (routeId != "") {
       intervalId.current = setInterval(() => {
         updatePosition();
-      }, 30000);
+      }, 20000);
     }
   }, [routeId]);
 
@@ -197,8 +197,24 @@ export function CurrentRoute() {
       });
       const responseData = await response.json();
       if (responseData.success === true) {
-        const now = formatDateTime(new Date());
-        if (responseData.data.status == 'active' && now > responseData.data.time_user_end) {
+        const now = new Date();
+        const formattedDate =
+          now.getFullYear() +
+          "-" +
+          ("0" + (now.getMonth() + 1)).slice(-2) +
+          "-" +
+          ("0" + now.getDate()).slice(-2) +
+          " " +
+          ("0" + now.getHours()).slice(-2) +
+          ":" +
+          ("0" + now.getMinutes()).slice(-2) +
+          ":" +
+          ("0" + now.getSeconds()).slice(-2);
+
+        if (
+          responseData.data.status == "active" &&
+          formattedDate > responseData.data.time_user_end
+        ) {
           createWarning();
         }
         //console.log("OK! Mensaje:", responseData);
