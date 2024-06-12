@@ -304,7 +304,7 @@ export function CurrentRoute() {
         </IonButton>
         <a href="" className="text-decoration-none">
           <IonButton expand="full" color={"danger"} className="route-button">
-            <span className="mx-1 fw-bold">LAMAR 112</span>{" "}
+            <span className="mx-1 fw-bold">LLAMAR 112</span>{" "}
             <IonIcon icon={call}></IonIcon>
           </IonButton>
         </a>
