@@ -1,10 +1,12 @@
 import {
   IonAvatar,
   IonBadge,
+  IonButton,
   IonButtons,
   IonChip,
   IonContent,
   IonIcon,
+  IonicSlides,
   IonItem,
   IonLabel,
   IonList,
@@ -36,6 +38,7 @@ import {
   peopleSharp,
   personOutline,
   personSharp,
+  refreshOutline,
 } from "ionicons/icons";
 import { API_URL, URL } from "../../constants";
 import defaultAvatar from "../../assets/default-avatar.jpg";
@@ -94,8 +97,6 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       });
       const responseData = await response.json();
       if (responseData.success === true) {
-       
-
         setPending(responseData.data);
       } else {
         console.log("Error! Mensaje:", responseData);
@@ -134,11 +135,11 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
     }
   };
 
-  const deleteStorage =()=>{
-localStorage.removeItem("authToken") ;
-localStorage.removeItem("user") ;
-localStorage.removeItem("profile") ;
-  }
+  const deleteStorage = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("profile");
+  };
   useEffect(() => {
     getPendingRelations();
   }, []);
@@ -174,33 +175,41 @@ localStorage.removeItem("profile") ;
             </IonText>
             {appPages.map((appPage, index) => {
               return (
-                <a href={appPage.url}  key={index} className="text-decoration-none">
-                  <IonMenuToggle autoHide={false}>
-                    <IonItem  >
-                      <IonIcon
-                        aria-hidden="true"
-                        slot="start"
-                        color="sororidark"
-                        ios={appPage.iosIcon}
-                        md={appPage.mdIcon}
-                      />
-                      {index == 4 ? (
-                        <IonChip className="pending-chip" slot="end" >{pending.length}</IonChip>
-                        // <IonBadge slot="end" color="sororidark" className="p-2">
-                        //   <IonText
-                           
-                        //     color={"light"}
-                        //   >
-                            
-                        //   </IonText>
-                        // </IonBadge>
-                      ) : (
-                        <></>
-                      )}
-                      <IonLabel color={"sororidark"}>{appPage.title}</IonLabel>
-                    </IonItem>
-                  </IonMenuToggle>
-                </a>
+                <IonItem>
+                  <a href={appPage.url} key={index} className="my-menu-link">
+                    <IonIcon
+                      aria-hidden="true"
+                      slot="start"
+                      color="sororidark"
+                      ios={appPage.iosIcon}
+                      md={appPage.mdIcon}
+                    />
+
+                    <IonLabel color={"sororidark"} className="mx-3">
+                      {appPage.title}
+                    </IonLabel>
+                  </a>
+                  {index == 4 ? (
+                    <>
+                      <IonChip className="pending-chip" slot="end">
+                        {pending.length}
+                      </IonChip>
+                      <IonButton
+                        slot="end"
+                        color={"sororidark"}
+                        onClick={getPendingRelations}
+                      >
+                        <IonIcon
+                          className="py-1"
+                          color="light"
+                          icon={refreshOutline}
+                        />
+                      </IonButton>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </IonItem>
               );
             })}
             <IonMenuToggle onClick={deleteStorage} autoHide={false}>

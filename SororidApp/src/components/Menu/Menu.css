@@ -122,8 +122,21 @@ ion-item.selected {
 
 .pending-chip{
   /* background-color: #9984b8; */
-   background-color: #85267c; 
+   background-color: #9984b8; 
   font-weight: bold;
   padding: 0.5 0.5em 0.5 0.5em ;
   color: white;
+  margin-right: 8px;
+}
+
+.pending-container {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* Pushes the container to the right */
+}
+
+.my-menu-link{
+  text-decoration: none;
+  display: flex;
+
 }

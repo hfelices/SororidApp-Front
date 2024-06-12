@@ -41,7 +41,7 @@ export function Register() {
         .required("El correo electrónico es obligatorio"),
       password: Yup.string()
         .required("La contraseña es obligatoria")
-        .min(6, "La contraseña debe tener al menos 6 caracteres"),
+        .min(8, "La contraseña debe tener al menos 8 caracteres"),
       confirmarContrasena: Yup.string()
         .oneOf([Yup.ref("password")], "Las contraseñas deben coincidir")
         .required("Confirma tu contraseña"),

@@ -10,6 +10,7 @@ import {
   useIonToast,
 } from "@ionic/react";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
+import { Spinner } from "../../../components";
 export function UserDetails() {
   const { id } = useParams();
   const authToken = JSON.parse(localStorage.getItem("authToken") || "");
@@ -182,11 +183,7 @@ export function UserDetails() {
   return (
     <>
       {loading ? (
-        <div className="spinner">
-          {" "}
-          {/* Aquí debes colocar tu componente de spinner */}
-          Loading...
-        </div>
+        <Spinner/>
       ) : (
         <>
           <div className="all">

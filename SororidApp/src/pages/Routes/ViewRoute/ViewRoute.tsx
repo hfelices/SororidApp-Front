@@ -4,7 +4,7 @@ import mapboxgl from "mapbox-gl";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import { API_URL, URL } from "../../../constants";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
-import { IonButton, IonIcon, useIonRouter } from "@ionic/react";
+import { IonButton, IonIcon, useIonRouter, useIonToast } from "@ionic/react";
 import "./ViewRoute.css";
 import { refreshOutline } from "ionicons/icons";
 import { Spinner } from "../../../components";
@@ -19,16 +19,24 @@ export function ViewRoute() {
   const map = useRef(null);
   const markerRef = useRef(null);
   const clickMarkerRef = useRef(null);
-
+  const [loading, setLoading] = useState(true);
   const [currentRoute, setCurrentRoute] = useState(null);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
-  const [routeId, setRouteId] = useState("");
   const [estimatedEndTime, setEstimatedEndTime] = useState(null);
-  const [canRefresh, setCanRefresh] = useState(true); // Nuevo estado para controlar el temporizador
+  const [canRefresh, setCanRefresh] = useState(true);
+  const [present] = useIonToast();
+
+  const presentToast = (message, myclass) => {
+    present({
+      message: message,
+      duration: 1500,
+      position: "middle",
+      cssClass: myclass,
+    });
+  };
 
   const authToken = JSON.parse(localStorage.getItem("authToken") || "");
-  const profile = JSON.parse(localStorage.getItem("profile") || "");
 
   const getRoute = async () => {
     try {
@@ -41,8 +49,16 @@ export function ViewRoute() {
         },
       });
       const responseData = await response.json();
-      if (responseData.success) {
+      if (responseData.success && responseData.route) {
+        if(responseData.route.status !== "active"){
+          presentToast(
+            "La ruta que quiere ver ha finalizado",
+            "sororidad"
+          );
+          router.push("/");
+        }
         setCurrentRoute(responseData);
+        setLoading(false);
       } else {
         console.error("Error! Mensaje:", responseData);
       }
@@ -52,9 +68,9 @@ export function ViewRoute() {
   };
 
   const refreshPosition = async () => {
-    if (!canRefresh) return; // Si no se puede refrescar, no hacer nada
+    if (!canRefresh) return;
 
-    setCanRefresh(false); // Deshabilitar el botón
+    setCanRefresh(false);
 
     try {
       const response = await fetch(`${API_URL}routes/${id}`, {
@@ -66,12 +82,18 @@ export function ViewRoute() {
         },
       });
       const responseData = await response.json();
-      if (responseData.success) {
+      if (responseData.success && responseData.route) {
         setCurrentRoute(responseData);
-        const {
-          coordinates_lat_now,
-          coordinates_lon_now,
-        } = responseData.route;
+        console.log(responseData);
+        
+        if(responseData.route.status !== "active"){
+          presentToast(
+            "La ruta que estaba viendo ha finalizado",
+            "sororidad"
+          );
+          router.push("/");
+        }
+        const { coordinates_lat_now, coordinates_lon_now } = responseData.route;
         markerRef.current.setLngLat([coordinates_lon_now, coordinates_lat_now]);
         map.current.setCenter([coordinates_lon_now, coordinates_lat_now]);
       } else {
@@ -81,7 +103,6 @@ export function ViewRoute() {
       console.error("Error al realizar la solicitud:", error);
     }
 
-    // Rehabilitar el botón después de 30 segundos
     setTimeout(() => {
       setCanRefresh(true);
     }, 30000);
@@ -103,13 +124,11 @@ export function ViewRoute() {
       coordinates_lat_end,
       coordinates_lat_start,
       coordinates_lon_start,
-      route_id,
     } = currentRoute.route;
 
     const { profile_img_path } = currentRoute.profile;
     setDistance(parseFloat(distance).toFixed(2));
-    setDuration(parseFloat(duration).toFixed(2));
-    setRouteId(route_id);
+    setDuration((parseFloat(duration) / 60).toFixed(2)); // Convertir a minutos
 
     if (map.current) return;
 
@@ -176,7 +195,7 @@ export function ViewRoute() {
 
       // Calculate estimated end time
       const currentTime = new Date();
-      const estimatedTime = new Date(currentTime.getTime() + duration * 1000);
+      const estimatedTime = new Date(currentTime.getTime() + duration * 60 * 1000); // Convertir a milisegundos
       setEstimatedEndTime(estimatedTime);
     };
 
@@ -210,7 +229,7 @@ export function ViewRoute() {
 
   return (
     <>
-      <div ref={mapContainer} style={{ width: "100%", height: "80vh" }} />
+      {loading ? <Spinner /> : <div ref={mapContainer} style={{ width: "100%", height: "80vh" }} />}
 
       {distance && duration && (
         <div
@@ -239,9 +258,13 @@ export function ViewRoute() {
         color={"sororidark"}
         expand="full"
         className="route-refresh-button"
-        disabled={!canRefresh} // Deshabilitar el botón si canRefresh es false
+        disabled={!canRefresh}
       >
-        <span className="mx-1">{canRefresh ? "Refrescar Posición": "Espera 30 segundos para volver a refrescar"}</span>{" "}
+        <span className="mx-1">
+          {canRefresh
+            ? "Refrescar Posición"
+            : "Espera 30 segundos para volver a refrescar"}
+        </span>
         <IonIcon color="light" icon={refreshOutline} />
       </IonButton>
     </>

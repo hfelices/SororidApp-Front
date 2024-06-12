@@ -58,6 +58,7 @@ export function Home() {
     }
   };
   const refreshList = () => {
+    setLoading(true)
     if (!canRefresh) return; // Si no se puede refrescar, no hacer nada
 
     setCanRefresh(false); // Deshabilitar el botón
@@ -81,7 +82,7 @@ export function Home() {
             shape="round"
             fill="outline"
           >
-            Iniciar recorrido
+            Iniciar Ruta
           </IonButton>
         </a>
 
@@ -89,19 +90,14 @@ export function Home() {
           <Spinner />
         ) : (
           <div className="d-flex flex-column">
-            {routes.length > 0 ? (
-              <>
-                <IonText
-                  className="text-center mt-5 fw-bold home-routes-title"
-                  color={"sororidark"}
-                >
-                  Rutas Activas
-                </IonText>
+          
 
                 <IonButton
                   onClick={refreshList}
                   color={"sororidark"}
-                  disabled={!canRefresh} // Deshabilitar el botón si canRefresh es false
+                  disabled={!canRefresh}
+                  shape="round"
+                  className="my-large-button"
                 >
                   <span className="mx-1">
                     {canRefresh
@@ -110,6 +106,14 @@ export function Home() {
                   </span>{" "}
                   <IonIcon color="light" icon={refreshOutline} />
                 </IonButton>
+            {routes.length > 0 ? (
+              <>
+                  <IonText
+                  className="text-center mt-5 fw-bold home-routes-title"
+                  color={"sororidark"}
+                >
+                  Rutas en curso.
+                </IonText>
                 {routes.map((route, index) => (
                   <div key={index}>
                     <Link
@@ -152,7 +156,12 @@ export function Home() {
                 ))}
               </>
             ) : (
-              <p>Lista vacía</p>
+              <IonText
+              className="text-center mt-5 fw-bold home-routes-title"
+              color={"sororidark"}
+            >
+              No hay rutas en curso.
+            </IonText>
             )}
           </div>
         )}
