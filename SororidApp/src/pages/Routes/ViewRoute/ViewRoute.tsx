@@ -30,7 +30,7 @@ export function ViewRoute() {
   const presentToast = (message, myclass) => {
     present({
       message: message,
-      duration: 1500,
+      duration: 5000,
       position: "middle",
       cssClass: myclass,
     });
@@ -50,20 +50,25 @@ export function ViewRoute() {
       });
       const responseData = await response.json();
       if (responseData.success && responseData.route) {
-        if(responseData.route.status !== "active"){
+        if(responseData.route.status === "ended"){
           presentToast(
-            "La ruta que quiere ver ha finalizado",
+            "La ruta que estaba viendo ha finalizado",
             "sororidad"
           );
           router.push("/");
+        }else if (responseData.route.status === "alarm"){
+          presentToast(
+            "TU CONTACTO YA DEBERÍA HABER LLEGADO A SU DESTINO, VERIFICA SU ESTADO",
+            "red"
+          );
         }
         setCurrentRoute(responseData);
         setLoading(false);
       } else {
-        console.error("Error! Mensaje:", responseData);
+        //console.error("Error! Mensaje:", responseData);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
     }
   };
 
@@ -84,23 +89,28 @@ export function ViewRoute() {
       const responseData = await response.json();
       if (responseData.success && responseData.route) {
         setCurrentRoute(responseData);
-        console.log(responseData);
+        //console.log(responseData);
         
-        if(responseData.route.status !== "active"){
+        if(responseData.route.status === "ended"){
           presentToast(
             "La ruta que estaba viendo ha finalizado",
             "sororidad"
           );
           router.push("/");
+        }else if (responseData.route.status === "alarm"){
+          presentToast(
+            "TU CONTACTO YA DEBERÍA HABER LLEGADO A SU DESTINO, VERIFICA SU ESTADO",
+            "red"
+          );
         }
         const { coordinates_lat_now, coordinates_lon_now } = responseData.route;
         markerRef.current.setLngLat([coordinates_lon_now, coordinates_lat_now]);
         map.current.setCenter([coordinates_lon_now, coordinates_lat_now]);
       } else {
-        console.error("Error! Mensaje:", responseData);
+        //console.error("Error! Mensaje:", responseData);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
     }
 
     setTimeout(() => {
@@ -124,12 +134,16 @@ export function ViewRoute() {
       coordinates_lat_end,
       coordinates_lat_start,
       coordinates_lon_start,
+      time_estimated
     } = currentRoute.route;
 
     const { profile_img_path } = currentRoute.profile;
     setDistance(parseFloat(distance).toFixed(2));
     setDuration((parseFloat(duration) / 60).toFixed(2)); // Convertir a minutos
-
+ // Calculate estimated end time
+//  const currentTime = new Date();
+//  const estimatedTime = new Date(currentTime.getTime() + duration * 60 * 1000); // Convertir a milisegundos
+ setEstimatedEndTime(time_estimated);
     if (map.current) return;
 
     map.current = new mapboxgl.Map({
@@ -193,32 +207,11 @@ export function ViewRoute() {
         },
       });
 
-      // Calculate estimated end time
-      const currentTime = new Date();
-      const estimatedTime = new Date(currentTime.getTime() + duration * 60 * 1000); // Convertir a milisegundos
-      setEstimatedEndTime(estimatedTime);
+     
     };
 
     map.current.on("load", fetchRoute);
 
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        markerRef.current.setLngLat([longitude, latitude]);
-      },
-      (error) => {
-        console.error("Error watching position: ", error);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 5000,
-      }
-    );
-
-    return () => {
-      navigator.geolocation.clearWatch(watchId);
-    };
   }, [currentRoute]);
 
   const formatTime = (date) => {

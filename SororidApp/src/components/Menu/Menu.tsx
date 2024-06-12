@@ -6,7 +6,6 @@ import {
   IonChip,
   IonContent,
   IonIcon,
-  IonicSlides,
   IonItem,
   IonLabel,
   IonList,
@@ -14,7 +13,6 @@ import {
   IonMenu,
   IonMenuButton,
   IonMenuToggle,
-  IonNote,
   IonText,
   useIonRouter,
 } from "@ionic/react";
@@ -27,8 +25,6 @@ import {
   ellipseSharp,
   exitOutline,
   exitSharp,
-  heartOutline,
-  heartSharp,
   homeOutline,
   mailOutline,
   mailSharp,
@@ -99,11 +95,11 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       if (responseData.success === true) {
         setPending(responseData.data);
       } else {
-        console.log("Error! Mensaje:", responseData);
+        //console.log("Error! Mensaje:", responseData);
         return [];
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
       return [];
     }
   };
@@ -120,7 +116,7 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
       });
       const responseData = await response.json();
       if (responseData.success === true) {
-        console.log("OK! Mensaje:", responseData);
+        //console.log("OK! Mensaje:", responseData);
         localStorage.removeItem("authToken");
         localStorage.removeItem("user");
         localStorage.removeItem("profile");
@@ -128,18 +124,18 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
         doLogout();
         router.push("/login");
       } else {
-        console.log("Error! Mensaje:", responseData);
+        //console.log("Error! Mensaje:", responseData);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
     }
   };
 
-  const deleteStorage = () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
-    localStorage.removeItem("profile");
-  };
+  // const deleteStorage = () => {
+  //   localStorage.removeItem("authToken");
+  //   localStorage.removeItem("user");
+  //   localStorage.removeItem("profile");
+  // };
   useEffect(() => {
     getPendingRelations();
   }, []);
@@ -175,8 +171,8 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
             </IonText>
             {appPages.map((appPage, index) => {
               return (
-                <IonItem>
-                  <a href={appPage.url} key={index} className="my-menu-link">
+                <IonItem key={index}>
+                  <a href={appPage.url} className="my-menu-link">
                     <IonIcon
                       aria-hidden="true"
                       slot="start"
@@ -189,7 +185,7 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
                       {appPage.title}
                     </IonLabel>
                   </a>
-                  {index == 4 ? (
+                  {index === 4 ? (
                     <>
                       <IonChip className="pending-chip" slot="end">
                         {pending.length}
@@ -212,7 +208,7 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
                 </IonItem>
               );
             })}
-            <IonMenuToggle onClick={deleteStorage} autoHide={false}>
+            {/* <IonMenuToggle onClick={deleteStorage} autoHide={false}>
               <IonItem>
                 <IonIcon
                   aria-hidden="true"
@@ -223,8 +219,8 @@ export const Menu: React.FC<MenuProps> = ({ doLogout }) => {
                 />
                 <IonLabel className="text-danger">Eliminar Storage</IonLabel>
               </IonItem>
-            </IonMenuToggle>
-            <IonMenuToggle onClick={logout} autoHide={false}>
+            </IonMenuToggle> */}
+            <IonMenuToggle key={"logout"} onClick={logout} autoHide={false}>
               <IonItem>
                 <IonIcon
                   aria-hidden="true"

@@ -50,11 +50,11 @@ export function Pending() {
         setRelations(responseData.data);
         setLoading(false);
       } else {
-        console.log("Error! Mensaje:", responseData);
+        //console.log("Error! Mensaje:", responseData);
         setLoading(false);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
       return [];
     }
   };
@@ -78,7 +78,7 @@ export function Pending() {
             getPendingRelations();
             presentToast('Solicitud aceptada con éxito', 'green');
         } else {
-          console.log("Error! Mensaje:", responseData);
+          //console.log("Error! Mensaje:", responseData);
           presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
           return {};
         }
@@ -96,16 +96,16 @@ export function Pending() {
           getPendingRelations();
           presentToast('Solicitud rechazada con éxito', 'green');
         } else {
-          console.log("Error! Mensaje:", responseData);
+          //console.log("Error! Mensaje:", responseData);
           presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
           return {};
         }
       } else {
-        console.log("invalid type" + type);
+        //console.log("invalid type" + type);
         presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
       presentToast('Ha ocurrido un error, porfavor vuélvalo a intentar', 'red');
       return {};
     }

@@ -61,20 +61,20 @@ export function Register() {
         });
         const responseData = await response.json();
         if (responseData.success === true) {
-          console.log("OK! Mensaje:", responseData);
+          //console.log("OK! Mensaje:", responseData);
           presentToast("Registrado con éxito", "green");
           setTimeout(() => {
             router.push("/login");
           }, 1500);
         } else {
-          console.log("Error! Mensaje:", responseData);
+          //console.log("Error! Mensaje:", responseData);
           presentToast(
             "Ha ocurrido un error, porfavor vuélvalo a intentar",
             "red"
           );
         }
       } catch (error) {
-        console.error("Error al realizar la solicitud:", error);
+        //console.error("Error al realizar la solicitud:", error);
         presentToast(
           "Ha ocurrido un error, porfavor vuélvalo a intentar",
           "red"

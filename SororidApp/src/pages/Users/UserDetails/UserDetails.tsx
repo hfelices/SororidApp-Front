@@ -43,11 +43,11 @@ export function UserDetails() {
         setUser(responseData);
         setLoading(false);
       } else {
-        console.log("Error! Mensaje:", responseData);
+        //console.log("Error! Mensaje:", responseData);
         return {};
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
       return {};
     }
   };
@@ -67,13 +67,13 @@ export function UserDetails() {
       const responseData = await response.json();
       if (responseData.success === true) {
         setRelation(responseData.data.find((elemento) => elemento.id == id));
-        console.log(responseData.data);
+        //console.log(responseData.data);
       } else {
-        console.log("Error! Mensaje:", responseData);
+        //console.log("Error! Mensaje:", responseData);
         return {};
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
       return {};
     }
   };
@@ -82,7 +82,7 @@ export function UserDetails() {
       const typesCreate = ["first", "second", "blocked"];
       const typesModify = ["go_first", "go_second", "go_blocked"];
       const typesDelete = ["delete", "unblock"];
-      console.log(user);
+      //console.log(user);
       if (typesCreate.includes(type)) {
         const response = await fetch(`${API_URL}relations`, {
           method: "POST",
@@ -103,7 +103,7 @@ export function UserDetails() {
           setRelation(responseData.data);
           presentToast("Solicitud mandada con éxito", "green");
         } else {
-          console.log("Error! Mensaje:", responseData);
+          //console.log("Error! Mensaje:", responseData);
           presentToast(
             "Ha ocurrido un error, porfavor vuélvalo a intentar",
             "red"
@@ -130,7 +130,7 @@ export function UserDetails() {
           setRelation(responseData.data);
           presentToast("Relación modificada con éxito", "green");
         } else {
-          console.log("Error! Mensaje:", responseData);
+          //console.log("Error! Mensaje:", responseData);
           presentToast(
             "Ha ocurrido un error, porfavor vuélvalo a intentar",
             "red"
@@ -154,7 +154,7 @@ export function UserDetails() {
           setRelation(undefined);
           presentToast("Relacion eliminada con éxito", "green");
         } else {
-          console.log("Error! Mensaje:", responseData);
+          //console.log("Error! Mensaje:", responseData);
           presentToast(
             "Ha ocurrido un error, porfavor vuélvalo a intentar",
             "red"
@@ -162,14 +162,14 @@ export function UserDetails() {
           return {};
         }
       } else {
-        console.log("invalid type" + type);
+        //console.log("invalid type" + type);
         presentToast(
           "Ha ocurrido un error, porfavor vuélvalo a intentar",
           "red"
         );
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
       presentToast("Ha ocurrido un error, porfavor vuélvalo a intentar", "red");
       return {};
     }

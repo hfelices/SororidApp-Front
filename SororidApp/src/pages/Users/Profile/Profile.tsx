@@ -53,11 +53,11 @@ export function Profile() {
         setTowns(responseData.data);
         setLoading(false);
       } else {
-        console.log("Error! Mensaje:", responseData);
+        //console.log("Error! Mensaje:", responseData);
         setLoading(false);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
       setLoading(false);
     }
   };
@@ -116,21 +116,21 @@ export function Profile() {
         });
         const responseData = await response.json();
         if (responseData.success === true) {
-          console.log("OK! Mensaje:", responseData);
+          //console.log("OK! Mensaje:", responseData);
           localStorage.setItem("profile", JSON.stringify(responseData.profile));
           localStorage.setItem("user", JSON.stringify(responseData.user));
-          console.log(responseData.user);
+          //console.log(responseData.user);
 
           presentToast("Perfil actualizado con éxito", "green");
         } else {
-          console.log("Error! Mensaje:", responseData);
+          //console.log("Error! Mensaje:", responseData);
           presentToast(
             "Ha ocurrido un error, porfavor vuélvalo a intentar",
             "red"
           );
         }
       } catch (error) {
-        console.error("Error al realizar la solicitud:", error);
+        //console.error("Error al realizar la solicitud:", error);
         presentToast(
           "Ha ocurrido un error, porfavor vuélvalo a intentar",
           "red"
@@ -159,21 +159,21 @@ export function Profile() {
 
         const responseData = await response.json();
         if (responseData.success) {
-          console.log("Imagen subida con éxito:", responseData);
+          //console.log("Imagen subida con éxito:", responseData);
 
           localStorage.setItem("profile", JSON.stringify(responseData.data));
 
           setUserImage(URL + responseData.data.profile_img_path);
           presentToast("Foto de perfil actualizada con éxito", "green");
         } else {
-          console.error("Error al subir imagen:", responseData.message);
+          //console.error("Error al subir imagen:", responseData.message);
           presentToast(
             "Ha ocurrido un error, porfavor vuélvalo a intentar",
             "red"
           );
         }
       } catch (error) {
-        console.error("Error en la petición:", error);
+        //console.error("Error en la petición:", error);
         presentToast(
           "Ha ocurrido un error, porfavor vuélvalo a intentar",
           "red"

@@ -3,12 +3,7 @@ import mapboxgl from "mapbox-gl";
 import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
 import { API_URL, URL } from "../../../constants";
 import defaultAvatar from "../../../assets/default-avatar.jpg";
-import {
-  IonButton,
-  IonIcon,
-  useIonRouter,
-  useIonToast,
-} from "@ionic/react";
+import { IonButton, IonIcon, useIonRouter, useIonToast } from "@ionic/react";
 import { call } from "ionicons/icons";
 import "./CurrentRoute.css";
 
@@ -134,7 +129,7 @@ export function CurrentRoute() {
         markerRef.current.setLngLat([longitude, latitude]);
       },
       (error) => {
-        console.error("Error watching position: ", error);
+        //console.error("Error watching position: ", error);
       },
       {
         enableHighAccuracy: true,
@@ -142,8 +137,6 @@ export function CurrentRoute() {
         timeout: 5000,
       }
     );
-
-    
 
     return () => {
       navigator.geolocation.clearWatch(watchId);
@@ -153,11 +146,11 @@ export function CurrentRoute() {
   useEffect(() => {
     if (routeId != "") {
       intervalId.current = setInterval(() => {
-        updatePosition()
+        updatePosition();
       }, 30000);
     }
-  }, [routeId])
-  
+  }, [routeId]);
+
   const endRoute = async () => {
     const now = formatDateTime(new Date());
     try {
@@ -175,24 +168,22 @@ export function CurrentRoute() {
       });
       const responseData = await response.json();
       if (responseData.success === true) {
-        console.log("OK! Mensaje:", responseData);
+        //console.log("OK! Mensaje:", responseData);
         clearInterval(intervalId.current);
         presentToast("Ruta finalizada correctamente", "sororidad");
         localStorage.removeItem("currentRoute");
         router.push("/");
       } else {
-        console.log("Error! Mensaje:", responseData);
+        //console.log("Error! Mensaje:", responseData);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
     }
   };
 
   const updatePosition = async () => {
-    
     try {
-      const response = await fetch(API_URL + "routes/" + routeId
-        , {
+      const response = await fetch(API_URL + "routes/" + routeId, {
         method: "PUT",
         headers: {
           Accept: "application/json",
@@ -206,12 +197,40 @@ export function CurrentRoute() {
       });
       const responseData = await response.json();
       if (responseData.success === true) {
-        console.log("OK! Mensaje:", responseData);
+        const now = formatDateTime(new Date());
+        if (responseData.data.status == 'active' && now > responseData.data.time_user_end) {
+          createWarning();
+        }
+        //console.log("OK! Mensaje:", responseData);
       } else {
-        console.log("Error! Mensaje:", responseData);
+        //console.log("Error! Mensaje:", responseData);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
+    }
+  };
+
+  const createWarning = async () => {
+    try {
+      const response = await fetch(API_URL + "routes/" + routeId, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          status: "alarm",
+        }),
+      });
+      const responseData = await response.json();
+      if (responseData.success === true) {
+        //console.log("OK! Mensaje:", responseData);
+      } else {
+        //console.log("Error! Mensaje:", responseData);
+      }
+    } catch (error) {
+      //console.error("Error al realizar la solicitud:", error);
     }
   };
 

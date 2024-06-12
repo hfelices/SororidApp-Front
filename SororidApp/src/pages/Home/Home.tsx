@@ -20,7 +20,7 @@ import { Spinner } from "../../components";
 import defaultAvatar from "../../assets/default-avatar.jpg";
 import "./Home.css";
 import { Link } from "react-router-dom";
-import { refreshOutline } from "ionicons/icons";
+import { refreshOutline, warningOutline } from "ionicons/icons";
 mapboxgl.accessToken =
   "pk.eyJ1IjoiaGZlbGljZXMiLCJhIjoiY2x3ejZmZGxpMDQwbzJzc2Z6YzV3OWM4MiJ9.Zf9F1BMdCxy465v2ZdHuPQ";
 
@@ -44,21 +44,20 @@ export function Home() {
       const responseData = await response.json();
 
       if (responseData.success) {
-        console.log(responseData);
-
         setRoutes(responseData.data);
         setLoading(false);
       } else if (responseData.message == "No routes available.") {
+        setRoutes([]);
         setLoading(false);
       } else {
-        console.error("Error! Mensaje:", responseData);
+        //console.error("Error! Mensaje:", responseData);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
     }
   };
   const refreshList = () => {
-    setLoading(true)
+    setLoading(true);
     if (!canRefresh) return; // Si no se puede refrescar, no hacer nada
 
     setCanRefresh(false); // Deshabilitar el botón
@@ -90,25 +89,23 @@ export function Home() {
           <Spinner />
         ) : (
           <div className="d-flex flex-column">
-          
-
-                <IonButton
-                  onClick={refreshList}
-                  color={"sororidark"}
-                  disabled={!canRefresh}
-                  shape="round"
-                  className="my-large-button"
-                >
-                  <span className="mx-1">
-                    {canRefresh
-                      ? "Refrescar Lista"
-                      : "Espera 30 segundos para volver a refrescar"}
-                  </span>{" "}
-                  <IonIcon color="light" icon={refreshOutline} />
-                </IonButton>
+            <IonButton
+              onClick={refreshList}
+              color={"sororidark"}
+              disabled={!canRefresh}
+              shape="round"
+              className="my-large-button"
+            >
+              <span className="mx-1">
+                {canRefresh
+                  ? "Refrescar Lista"
+                  : "Espera 30 segundos para volver a refrescar"}
+              </span>{" "}
+              <IonIcon color="light" icon={refreshOutline} />
+            </IonButton>
             {routes.length > 0 ? (
               <>
-                  <IonText
+                <IonText
                   className="text-center mt-5 fw-bold home-routes-title"
                   color={"sororidark"}
                 >
@@ -120,7 +117,13 @@ export function Home() {
                       to={`/view-route/${route.route.id}`}
                       style={{ textDecoration: "none" }}
                     >
-                      <IonCard className="route-card">
+                      <IonCard
+                        className={
+                          route.route.status == "active"
+                            ? "route-card"
+                            : "alarm-card"
+                        }
+                      >
                         <IonGrid>
                           <IonRow>
                             <IonCol size="4">
@@ -141,12 +144,22 @@ export function Home() {
                               >
                                 {route.profile.name}
                               </IonCardTitle>
-                              <IonCardContent>
+
+                              {route.route.status == "active" ? (
                                 <IonText color={"sororilight"}>
                                   Hora de llegada: {route.route.time_user_end}
                                 </IonText>
-                                <IonText></IonText>
-                              </IonCardContent>
+                              ) : (
+                                <div className="d-flex flex-column justify-content-center">
+                                  <p className="warning-text text-center text-danger fw-bold h6">
+                                    ALARMA EN CURSO
+                                  </p>
+                                  <IonIcon color="danger" icon={warningOutline} className="warning-icon mt-0" />
+                                  <p className="warning-text text-center text-danger fw-bold h6">
+                                    VERIFICA SU ESTADO
+                                  </p>
+                                </div>
+                              )}
                             </IonCol>
                           </IonRow>
                         </IonGrid>
@@ -157,11 +170,11 @@ export function Home() {
               </>
             ) : (
               <IonText
-              className="text-center mt-5 fw-bold home-routes-title"
-              color={"sororidark"}
-            >
-              No hay rutas en curso.
-            </IonText>
+                className="text-center mt-5 fw-bold home-routes-title"
+                color={"sororidark"}
+              >
+                No hay rutas en curso.
+              </IonText>
             )}
           </div>
         )}

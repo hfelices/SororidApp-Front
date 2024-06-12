@@ -28,7 +28,7 @@ export function Explore() {
   const user = JSON.parse(localStorage.getItem("user") || "");
 
   const getExploreUsers = async (page, searchTerm = "") => {
-    console.log(`Fetching users with search term: ${searchTerm} and page: ${page}`); // Log
+    //console.log(`Fetching users with search term: ${searchTerm} and page: ${page}`); // Log
     try {
       const response = await fetch(
         `${API_URL}relations/${user.id}/explore?page=${page}&search=${searchTerm}`,
@@ -48,11 +48,11 @@ export function Explore() {
        
         
       } else {
-        console.log("Error! Mensaje:", responseData);
+        //console.log("Error! Mensaje:", responseData);
         return [];
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
       return [];
     }
   };
@@ -76,12 +76,12 @@ export function Explore() {
         setHasMore(false);
       }
     } catch (error) {
-      console.error("Error al obtener usuarios:", error);
+      //console.error("Error al obtener usuarios:", error);
     }
   };
 
   useEffect(() => {
-    console.log(`Search term changed: ${searchTerm}`); // Log
+    //console.log(`Search term changed: ${searchTerm}`); // Log
     generateItems(true);
   }, [searchTerm]);
 

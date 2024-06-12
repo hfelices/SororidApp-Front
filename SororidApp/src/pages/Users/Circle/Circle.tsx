@@ -72,15 +72,15 @@ export function Circle() {
         },
       });
       const responseData = await response.json();
-      console.log(' CONTACTS:');
-      console.log(responseData);
+      //console.log(' CONTACTS:');
+      //console.log(responseData);
       if (responseData.success) {
         setContacts(responseData.data);
       } else {
-        console.error("Error! Mensaje:", responseData);
+        //console.error("Error! Mensaje:", responseData);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
     }
   };
 
@@ -97,15 +97,15 @@ export function Circle() {
       const responseData = await response.json();
       
       if (responseData.success) {
-        console.log(`EXTENDED CONTACTS`);
-        console.log(responseData);
+        //console.log(`EXTENDED CONTACTS`);
+        //console.log(responseData);
         setExtendedContacts(responseData.data);
         setLoading(false);
       } else {
-        console.error("Error! Mensaje:", responseData);
+        //console.error("Error! Mensaje:", responseData);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
     }
   };
 
@@ -118,7 +118,7 @@ export function Circle() {
       getContacts();
       getExtendedContacts();
       setLoadingContacts(false);
-      console.log(allContacts);
+      //console.log(allContacts);
     }
   }, [contacts, extendedContacts]);
 

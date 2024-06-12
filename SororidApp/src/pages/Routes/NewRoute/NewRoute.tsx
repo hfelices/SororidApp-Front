@@ -77,7 +77,7 @@ export function NewRoute() {
           setShowAlert(true);
         }
       } catch (error) {
-        console.error("Error getting location:", error);
+        //console.error("Error getting location:", error);
         setShowAlert(true);
       }
     };
@@ -241,7 +241,7 @@ export function NewRoute() {
         "La hora seleccionada difiere en más de 60 minutos de la hora estimada.",
         "sororidad"
       );
-      console.log("");
+      //console.log("");
     } else {
       // Ajustar la hora local
       const localTime = new Date(selectedTime.getTime());
@@ -253,7 +253,9 @@ export function NewRoute() {
   const saveCurrentRoute = async () => {
     try {
       const formattedEstimatedEndTime = formatDateTime(estimatedEndTime);
-      const formattedTimeUserEnd = formatDateTime(timeUserEnd);
+      let formattedTimeUserEnd = new Date(timeUserEnd);
+      formattedTimeUserEnd.setHours(formattedTimeUserEnd.getHours() - 2);
+      formattedTimeUserEnd = formatDateTime(formattedTimeUserEnd);
   
       const numericDuration = parseFloat(duration); // Convertir la duración a un número
       const numericDistance = parseFloat(distance); // Convertir la distancia a un número
@@ -282,7 +284,7 @@ export function NewRoute() {
       });
       const responseData = await response.json();
       if (responseData.success === true) {
-        console.log("OK! Mensaje:", responseData);
+        //console.log("OK! Mensaje:", responseData);
         const routeData = {
           route_id: responseData.route.id,
           distance,
@@ -298,13 +300,12 @@ export function NewRoute() {
         localStorage.setItem("currentRoute", JSON.stringify(routeData));
         router.push("/current-route");
       } else {
-        console.log("Error! Mensaje:", responseData);
+        //console.log("Error! Mensaje:", responseData);
       }
     } catch (error) {
-      console.error("Error al realizar la solicitud:", error);
+      //console.error("Error al realizar la solicitud:", error);
     }
   };
-  
 
   const formatTime = (date) => {
     const hours = date.getHours().toString().padStart(2, "0");
@@ -332,7 +333,7 @@ export function NewRoute() {
           </IonButton>
         ) : (
           <IonText color={"sororilight"}>
-            {" "}
+
             <small>
               Pincha en el mapa para empezar tu ruta y selecciona con que
               círculo lo quieres compartir.
